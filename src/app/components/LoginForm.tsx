@@ -1,6 +1,6 @@
 'use client'
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 
 export default function LoginForm(){
     const[email,setEmail]=useState("")
