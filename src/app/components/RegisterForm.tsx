@@ -10,6 +10,7 @@ interface FormValues {
   name: string;
   email: string;
   password: string;
+  role: string;
 }
 
 const RegisterForm: React.FC = () => {
@@ -31,6 +32,7 @@ const RegisterForm: React.FC = () => {
       name: "",
       email: "",
       password: "",
+      role: "",
     },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
@@ -109,17 +111,23 @@ const RegisterForm: React.FC = () => {
             className={formik.touched.password && formik.errors.password ? "border-red-500" : ""}
           />
           <div>
-          <select
-           
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-        
-            required
-          >
-            <option value="" disabled>Select role</option>
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select>
+          <div>
+        <label htmlFor="role">Role</label>
+        <select
+          id="role"
+          name="role"
+          value={formik.values.role}
+          onChange={formik.handleChange}
+          required
+        >
+          <option value="" disabled>Select role</option>
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+        {formik.touched.role && formik.errors.role ? (
+          <div className="text-red-500 text-sm">{formik.errors.role}</div>
+        ) : null}
+      </div>
         </div>
           {formik.touched.password && formik.errors.password && (
             <div className="text-red-500 text-sm">{formik.errors.password}</div>
