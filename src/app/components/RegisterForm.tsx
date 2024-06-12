@@ -26,12 +26,31 @@ const RegisterForm: React.FC = () => {
     password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
   });
 
+<<<<<<< HEAD
   const formik = useFormik<FormValues>({
     initialValues: {
       name: "",
       email: "",
       password: "",
     },
+=======
+    if (!name || !email || !password) {
+      setError("All fields are necessary.");
+      return;
+    }
+try{
+    const res = await fetch("api/router", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
+      });
+>>>>>>> 94d10ca5942f8ad4b551e27dd74822ea80eba1ca
 
     onSubmit: async (values, { resetForm }) => {
       
