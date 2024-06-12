@@ -21,7 +21,7 @@ export default function LoginForm() {
                     setError("invalid credentials")
                     return;
                 }
-                router.replace("dashboard")
+                router.push("/dashboard")
             }catch(error){
                 console.log(error)
             }           
