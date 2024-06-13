@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { HiPencilAlt } from 'react-icons/hi';
-
+import { useRouter } from 'next/navigation';
 interface EditBtnProps {
   id: string;
   currentStatus: string;
@@ -10,7 +10,7 @@ interface EditBtnProps {
 const EditBtn: React.FC<EditBtnProps> = ({ id, currentStatus }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState(currentStatus);
-
+  const router = useRouter()
   const handleSave = async () => {
     try {
       const res = await fetch(`/api/users/${id}/edit`, {
@@ -23,6 +23,7 @@ const EditBtn: React.FC<EditBtnProps> = ({ id, currentStatus }) => {
 
       if (res.ok) {
         setIsOpen(false)
+        router.refresh()
       } else {
         console.error('Failed to update user status');
       }
