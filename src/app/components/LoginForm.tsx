@@ -20,12 +20,13 @@ export default function LoginForm() {
                 password,
                 redirect: false,
             });
+            
 
             if (res?.error) {
                 setError("Invalid credentials");
                 return;
             }
-            if (email.includes("@admin")) {
+            if (email.includes("admin")) {
                 router.push("/adminDashboard");
             } else {
                 router.push("/dashboard"); 

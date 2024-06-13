@@ -1,9 +1,10 @@
-import nextAuth from "next-auth";
+import NextAuth from "next-auth";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import User from "../../../../../models/schema";
 import bcrypt from "bcryptjs";
 import { connectMongoDB } from "../../../../../lib/mongodb";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 interface Credentials {
   email: string;
@@ -21,7 +22,7 @@ const authOptions: NextAuthOptions = {
           return null;
         }
         const { email, password } = credentials as Credentials;
-        console.log(email, password)
+        console.log(email, password);
         try {
           await connectMongoDB();
           const user = await User.findOne({ email });
@@ -35,6 +36,7 @@ const authOptions: NextAuthOptions = {
           return user;
         } catch (error) {
           console.log(error);
+          return null;
         }
       },
     }),
@@ -47,13 +49,13 @@ const authOptions: NextAuthOptions = {
     signIn: "/",
   },
   callbacks: {
-    async redirect({ url, baseUrl }: any) {
+    async redirect({ url, baseUrl }) {
       console.log(baseUrl);
       return baseUrl;
     },
   },
 };
 
-const handler = nextAuth(authOptions);
+const handler = (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res, authOptions);
 
-export { handler as Get, handler as POST };
+export { handler as GET, handler as POST };
