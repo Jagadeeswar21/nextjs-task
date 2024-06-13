@@ -112,7 +112,7 @@ const RegisterForm: React.FC = () => {
           />
           <div>
           <div>
-        <label htmlFor="role">Role</label>
+
         <select
           id="role"
           name="role"
