@@ -18,6 +18,7 @@ const RemoveBtn: React.FC<RemoveBtnProps> = ({ id }) => {
         headers: {
           'Content-Type': 'application/json',
         },
+        body:JSON.stringify({status:"inactive",isDeleted:true})
       });
 
       if (res.ok) {
