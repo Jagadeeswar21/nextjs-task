@@ -29,7 +29,7 @@ export default async function usersList(){
     const {users}=await getUsers()
   return (
     <>
-      {users.map((user: User) => (
+      {users?.map((user: User) => (
         <div
           key={user._id}
           className="p-4 border border-slate-300 my-3 flex justify-between gap-5 items-start"
