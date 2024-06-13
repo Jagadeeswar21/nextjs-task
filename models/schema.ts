@@ -27,7 +27,7 @@ const userSchema=new Schema(
         role: {
             type: String,
             enum: ["admin", "user"],
-            required: false,
+            required: true,
           },
           isDeleted: {
             type: Boolean,

@@ -1,28 +1,24 @@
-import NextAuth from "next-auth";
-import type { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import User from "../../../../../models/schema";
-import bcrypt from "bcryptjs";
-import { connectMongoDB } from "../../../../../lib/mongodb";
-import type { NextApiRequest, NextApiResponse } from "next";
 
-interface Credentials {
-  email: string;
-  password: string;
-}
+import NextAuth, { SessionStrategy } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import User from '../../../../../models/schema';
+import bcrypt from 'bcryptjs';
+import { connectMongoDB } from '../../../../../lib/mongodb';
 
-const authOptions: NextAuthOptions = {
+const authOptions = {
   providers: [
     CredentialsProvider({
-      type: "credentials",
-      credentials: {},
+      name: 'credentials',
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
       async authorize(credentials) {
-        console.log(credentials);
         if (!credentials) {
           return null;
         }
-        const { email, password } = credentials as Credentials;
-        console.log(email, password);
+        const { email, password } = credentials;
+
         try {
           await connectMongoDB();
           const user = await User.findOne({ email });
@@ -35,27 +31,33 @@ const authOptions: NextAuthOptions = {
           }
           return user;
         } catch (error) {
-          console.log(error);
+          console.error(error);
           return null;
         }
-      },
+      }
     }),
   ],
+  callbacks: {
+    async session({ session, token }:{session:any, token:any}) {
+      session.user.role = token.role
+      return session;
+    },
+    async jwt({ token, user }:{ token: any; user?: any }) {
+      if (user) {
+        token.role = user.role
+      }
+      return token
+    },
+  },
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as SessionStrategy,
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/",
   },
-  callbacks: {
-    async redirect({ url, baseUrl }) {
-      console.log(baseUrl);
-      return baseUrl;
-    },
-  },
 };
 
-const handler = (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res, authOptions);
+const handler = NextAuth(authOptions)
 
-export { handler as GET, handler as POST };
+export { handler as GET, handler as POST }
