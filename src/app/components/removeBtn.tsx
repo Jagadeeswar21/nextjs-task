@@ -1,0 +1,40 @@
+
+'use client'
+import React from 'react';
+import { HiTrash } from 'react-icons/hi';
+import { useRouter } from 'next/navigation';
+
+interface RemoveBtnProps {
+  id: string;
+}
+
+const RemoveBtn: React.FC<RemoveBtnProps> = ({ id }) => {
+  const router = useRouter()
+
+  const handleRemove = async () => {
+    try {
+      const res = await fetch(`/api/users/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (res.ok) {
+        router.refresh();
+      } else {
+        console.error('Failed to update user status');
+      }
+    } catch (error) {
+      console.error( error)
+    }
+  };
+
+  return (
+    <button onClick={handleRemove}>
+      <HiTrash size={24} />
+    </button>
+  );
+};
+
+export default RemoveBtn;
