@@ -29,15 +29,33 @@ const ContactForm: React.FC<ContactFormProps> = ({ contact, onClose, onSave }) =
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const newContact = { name, email, phone, status }
     try {
-      const res = await fetch(contact ? `/api/contacts/${contact._id}` : '/api/contacts', {
-        method: contact ? 'PUT' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+      let res;
+      if (contact?._id) {
+        res = await fetch(`/api/contacts/${contact._id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newContact),
+        });
+      } else {
+        res = await fetch('/api/contacts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newContact),
+        });
+      }
+      if(res.ok){
       const savedContact = await res.json();
       onSave(savedContact);
       onClose();
+      }else{
+        console.log('failed to save contact')
+      }
     } catch (error) {
       console.error('Failed to save contact', error);
     }

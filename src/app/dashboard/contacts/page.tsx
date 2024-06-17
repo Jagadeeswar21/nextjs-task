@@ -1,7 +1,9 @@
+import ContactsPage from "@/app/components/contactPage"
+
 export default function Contacts(){
     return(
         <div className="text-2xl text-center">
-            contacts Page
+           <ContactsPage/>
         </div>
     )
 }
