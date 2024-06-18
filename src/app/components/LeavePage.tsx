@@ -10,10 +10,13 @@ interface Leave {
   date: string;
   numberofleaves: number;
   numberofdays: number;
+  startDate?: string;
+  endDate?: string;
   dateRange: string;
   status: 'active' | 'inactive';
   reason: string;
 }
+
 const LeavesPage: React.FC = () => {
   const [leaves, setLeaves] = useState<Leave[]>([]);
   const [editingLeave, setEditingLeave] = useState<Leave | null>(null);
@@ -28,6 +31,7 @@ const LeavesPage: React.FC = () => {
       console.error('Failed to fetch leaves', error);
     }
   };
+
   useEffect(() => {
     fetchLeaves();
   }, []);
@@ -47,21 +51,21 @@ const LeavesPage: React.FC = () => {
           },
           body: JSON.stringify(newLeave),
         });
-        setLeaves(leaves.map(leave => (leave._id === newLeave._id ? newLeave : leave)));
-        toast.success("Successfully edited!",{
-          position:"bottom-right"
+        setLeaves(prevLeaves =>
+          prevLeaves.map(leave => (leave._id === newLeave._id ? newLeave : leave))
+        );
+        toast.success("Successfully edited!", {
+          position: "bottom-right"
         });
       } else {
-      
-        const res = await fetch('/api/leaves', {
+        await fetch('/api/leaves', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(newLeave),
         });
-        fetchLeaves()
-        
+        fetchLeaves();
       }
     } catch (error) {
       console.error('Failed to save leave', error);
@@ -107,8 +111,8 @@ const LeavesPage: React.FC = () => {
               <td className="border border-gray-400 p-1">{leave.numberofdays}</td>
               <td className="border border-gray-400 p-1">{leave.dateRange}</td>
               <td className="border border-gray-400 p-1">{leave.status}</td>
-              <td className="border border-gray-400 p-1"> <p className=''>{leave.reason}</p> </td>
-              <td className=" border border-gray-400 p-1">
+              <td className="border border-gray-400 p-1"><p className=''>{leave.reason}</p></td>
+              <td className="border border-gray-400 p-1">
                 <button onClick={() => handleEdit(leave)} className="text-blue-500 hover:text-blue-700 p-2">
                   <HiPencilAlt />
                 </button>

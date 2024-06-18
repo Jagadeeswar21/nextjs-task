@@ -7,7 +7,6 @@ type Params = {
 };
 
 export async function GET(req: NextApiRequest, { params }: { params: Params }) {
-    console.log("workng")
   const { id } = params;
   try {
     await connectMongoDB();
