@@ -1,26 +1,36 @@
-// components/ContactForm.tsx
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 interface Contact {
-    _id: string;
-    name: string;
-    email: string;
-    phone: string;
-    status: 'active' | 'inactive';
-  }
+  _id?: string;
+  name: string;
+  email: string;
+  phone: string;
+  status: 'active' | 'inactive';
+}
 interface ContactFormProps {
-  contact: Contact |null;
+  contact: Contact |null
   onClose: () => void;
   onSave: (contact: Contact) => void;
 }
-
 const ContactForm: React.FC<ContactFormProps> = ({ contact, onClose, onSave }) => {
   const [formData, setFormData] = useState({
-    name: contact?.name || '',
-    email: contact?.email || '',
-    phone: contact?.phone || '',
-    status: contact?.status || 'active',
+    name: '',
+    email: '',
+    phone: '',
+    status: 'active',
   });
+
+  useEffect(() => {
+    if (contact) {
+      setFormData({
+        
+        name: contact.name,
+        email: contact.email,
+        phone: contact.phone,
+        status: contact.status,
+      });
+    }
+  }, [contact]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -29,7 +39,8 @@ const ContactForm: React.FC<ContactFormProps> = ({ contact, onClose, onSave }) =
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newContact = { name, email, phone, status }
+    const newContact = { ...formData };
+
     try {
       let res;
       if (contact?._id) {
@@ -49,20 +60,22 @@ const ContactForm: React.FC<ContactFormProps> = ({ contact, onClose, onSave }) =
           body: JSON.stringify(newContact),
         });
       }
-      if(res.ok){
-      const savedContact = await res.json();
-      onSave(savedContact);
-      onClose();
-      }else{
-        console.log('failed to save contact')
+
+      if (res.ok) {
+        const savedContact = await res.json();
+        onSave(savedContact);
+        onClose();
+      } else {
+        console.log('Failed to save contact');
       }
     } catch (error) {
       console.error('Failed to save contact', error);
     }
   };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg ">
+      <div className="bg-white p-6 rounded-lg shadow-lg">
         <h2 className="text-xl font-bold mb-4">{contact ? 'Edit Contact' : 'Create New Contact'}</h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
@@ -114,7 +127,4 @@ const ContactForm: React.FC<ContactFormProps> = ({ contact, onClose, onSave }) =
     </div>
   );
 };
-
-
 export default ContactForm;
-

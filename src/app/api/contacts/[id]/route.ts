@@ -1,25 +1,22 @@
 import { connectMongoDB } from "../../../../../lib/mongodb";
 import Contact from "../../../../../models/contactSchema";
-import { NextResponse ,NextRequest} from "next/server";
-import { NextApiRequest ,NextApiResponse} from "next";
+import { NextResponse} from "next/server";
+
 type Params = {
   id: string;
 };
 
-export async function PUT(req: NextApiRequest,{ params }: { params: Params }) {
+export async function PUT(req:Request,{ params }: { params: Params }) {
     const { id } = params;
-    const { name, email, phone, status } = req.body;
-  
     try {
+    const { name, email, phone, status } =await req.json();
       await connectMongoDB();
-      const contact = await Contact.findByIdAndUpdate(id, { name, email, phone, status }, { new: true });
-      return NextResponse.json({contact},{status:200});
+      const updatedContact = await Contact.findByIdAndUpdate(id, { name, email, phone, status }, { new: true });
+      return NextResponse.json(updatedContact,{status:200});
     } catch (error) {
       return NextResponse.json({ message: 'Failed to update contact' },{status:500});
     }
   }
-  
-
 
 export async function DELETE(req: Request, { params }: { params: Params }) {
   const { id } = params;

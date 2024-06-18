@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { HiPencilAlt } from 'react-icons/hi';
 import LeaveForm from './LeaveForm';
 import RemoveLeave from './RemoveLeave';
+import toast from 'react-hot-toast';
 
 interface Leave {
-  _id: string;
+  _id?: string;
   date: string;
   numberofleaves: number;
   numberofdays: number;
@@ -50,6 +51,9 @@ const LeavesPage: React.FC = () => {
           body: JSON.stringify(newLeave),
         });
         setLeaves(leaves.map(leave => (leave._id === newLeave._id ? newLeave : leave)));
+        toast.success("Successfully edited!",{
+          position:"bottom-right"
+        });
       } else {
         // Add new leave
         const res = await fetch('/api/leaves', {
@@ -111,7 +115,7 @@ const LeavesPage: React.FC = () => {
                 <button onClick={() => handleEdit(leave)} className="text-blue-500 hover:text-blue-700 p-2">
                   <HiPencilAlt />
                 </button>
-                <RemoveLeave id={leave._id} onDelete={() => handleDelete(leave._id)} />
+                <RemoveLeave id={leave._id!} onDelete={() => handleDelete(leave._id!)} />
               </td>
             </tr>
           ))}
