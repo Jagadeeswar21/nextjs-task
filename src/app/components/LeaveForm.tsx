@@ -9,6 +9,8 @@ interface LeaveFormProps {
 interface Leave {
   _id?: string;
   date: string;
+  startDate: string;
+  endDate: string;
   numberofleaves: number;
   numberofdays: number;
   dateRange: string;
@@ -20,6 +22,8 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ leave, onClose, onSave }) => {
   const [formData, setFormData] = useState<Leave>({
     _id: leave?._id || '',
     date: leave?.date || '',
+    startDate: leave?.startDate || '',
+    endDate: leave?.endDate || '',
     numberofleaves: leave?.numberofleaves || 0,
     numberofdays: leave?.numberofdays || 0,
     dateRange: leave?.dateRange || '',
@@ -32,6 +36,16 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ leave, onClose, onSave }) => {
       setFormData(leave);
     }
   }, [leave]);
+
+  useEffect(() => {
+    if (formData.startDate && formData.endDate) {
+      const dateRange = `${new Date(formData.startDate).toLocaleDateString()} - ${new Date(formData.endDate).toLocaleDateString()}`;
+      setFormData(prevState => ({
+        ...prevState,
+        dateRange,
+      }));
+    }
+  }, [formData.startDate, formData.endDate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -63,6 +77,28 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ leave, onClose, onSave }) => {
             />
           </div>
           <div className="mb-2">
+            <label>Start Date</label>
+            <input
+              type="date"
+              name="startDate"
+              value={formData.startDate}
+              onChange={handleChange}
+              className="border rounded p-1 w-full"
+              required
+            />
+          </div>
+          <div className="mb-2">
+            <label>End Date</label>
+            <input
+              type="date"
+              name="endDate"
+              value={formData.endDate}
+              onChange={handleChange}
+              className="border rounded p-1 w-full"
+              required
+            />
+          </div>
+          <div className="mb-2">
             <label>Number of Leaves</label>
             <input
               type="number"
@@ -79,17 +115,6 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ leave, onClose, onSave }) => {
               type="number"
               name="numberofdays"
               value={formData.numberofdays}
-              onChange={handleChange}
-              className="border rounded p-1 w-full"
-              required
-            />
-          </div>
-          <div className="mb-2">
-            <label>Date Range</label>
-            <input
-              type="text"
-              name="dateRange"
-              value={formData.dateRange}
               onChange={handleChange}
               className="border rounded p-1 w-full"
               required
