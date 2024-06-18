@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { HiPencilAlt } from 'react-icons/hi';
 import ContactForm from './contactForm';
 import RemoveContact from './removeContact';
-
+import Pagination from './pagination';
+import toast from 'react-hot-toast';
 interface Contact {
-  _id: string;
+  _id?: string;
   name: string;
   email: string;
   phone: string;
@@ -16,37 +17,47 @@ const ContactsPage: React.FC = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const [showForm, setShowForm] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const contactsPerPage = 5;
 
   useEffect(() => {
-    const fetchContacts = async () => {
+    const fetchContacts = async (page:number) => {
       try {
-        const res = await fetch('/api/contacts');
-        const data: Contact[] = await res.json();
-        setContacts(data);
+        const res = await fetch(`/api/contacts?page=${page}&limit=${contactsPerPage}`);
+        const data = await res.json();
+        setContacts(data.contacts||[]);
+        setTotalPages(data.totalPages||1)
       } catch (error) {
         console.error('Failed to fetch contacts', error);
       }
     };
 
-    fetchContacts();
-  }, []);
+    fetchContacts(currentPage);
+  }, [currentPage]);
 
   const handleEdit = (contact: Contact) => {
     setEditingContact(contact);
     setShowForm(true);
   };
 
-  const handleSave = (newContact: Contact) => {
-    if (editingContact) {
-      setContacts(contacts.map(contact => (contact._id === newContact._id ? newContact : contact)));
+  const handleSave = (updatedContact: Contact) => {
+    if (editingContact && editingContact._id) {
+      setContacts(contacts.map(contact => (contact._id === updatedContact._id ? updatedContact : contact)));
     } else {
-      setContacts([...contacts, newContact]);
+      setContacts([...contacts, updatedContact]);
     }
+    toast.success("Successfully created!",{
+      position:"bottom-right"
+    });
     setShowForm(false);
   };
   const handleDelete = (id: string) => {
       setContacts(contacts.filter(contact => contact._id !== id));
       }
+      const handlePageChange = (page: number) => {
+          setCurrentPage(page);
+      };
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
@@ -76,12 +87,18 @@ const ContactsPage: React.FC = () => {
                 <button onClick={() => handleEdit(contact)} className="text-blue-500 hover:text-blue-700 p-2">
                   <HiPencilAlt />
                 </button>
-                <RemoveContact id={contact._id} onDelete={()=>handleDelete(contact._id)}/>
+                <RemoveContact id={contact._id!} onDelete={()=>handleDelete(contact._id!)}/>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
 
       {showForm && (
         <ContactForm
