@@ -8,8 +8,6 @@ import toast from 'react-hot-toast';
 interface Leave {
   _id?: string;
   date: string;
-  startDate: string;
-  endDate: string;
   numberofleaves: number;
   numberofdays: number;
   dateRange: string;
