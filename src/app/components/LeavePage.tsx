@@ -93,13 +93,13 @@ const LeavesPage: React.FC = () => {
       <table className="min-w-full border-collapse border border-gray-400 leading-normal">
         <thead>
           <tr>
-            <th className="border border-gray-400 p-1">Date</th>
-            <th className="border border-gray-400 p-1">Number of Leaves</th>
-            <th className="border border-gray-400 p-1">Number of Days</th>
-            <th className="border border-gray-400 p-1">Date Range</th>
-            <th className="border border-gray-400 p-1">Status</th>
-            <th className="border border-gray-400 p-1">Reason</th>
-            <th className="border border-gray-400 p-1">Actions</th>
+            <th className="border w-[14%] border-gray-400 p-1">Date</th>
+            <th className="border w-[14%] border-gray-400 p-1">Number of Leaves</th>
+            <th className="border w-[14%] border-gray-400 p-1">Number of Days</th>
+            <th className="border w-[14%] border-gray-400 p-1">Date Range</th>
+            <th className="border w-[14%] border-gray-400 p-1">Status</th>
+            <th className="border w-[20%] border-gray-400 p-1">Reason</th>
+            <th className="border w-[14%] border-gray-400 p-1">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -110,8 +110,8 @@ const LeavesPage: React.FC = () => {
               <td className="border border-gray-400 p-1">{leave.numberofdays}</td>
               <td className="border border-gray-400 p-1">{leave.dateRange}</td>
               <td className="border border-gray-400 p-1">{leave.status}</td>
-              <td className="border border-gray-400 p-1">{leave.reason}</td>
-              <td className="border border-gray-400 p-1 flex space-x-2">
+              <td className="border border-gray-400 p-1"> <p className=''>{leave.reason}</p> </td>
+              <td className=" border border-gray-400 p-1">
                 <button onClick={() => handleEdit(leave)} className="text-blue-500 hover:text-blue-700 p-2">
                   <HiPencilAlt />
                 </button>
