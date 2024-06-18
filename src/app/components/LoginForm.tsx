@@ -13,9 +13,7 @@ export default function LoginForm() {
 
   const router = useRouter()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmit = async () => {
     try {
       const res = await signIn("credentials", {
         email,
@@ -68,7 +66,7 @@ export default function LoginForm() {
               {error}
             </div>
           )}
-          <Link className="text-sm mt-3 text-right" href="/register">
+          <Link className="text-sm mt-3 text-right" href="/Register">
             Don t have an account? <span className="underline">Register</span>
           </Link>
         </form>

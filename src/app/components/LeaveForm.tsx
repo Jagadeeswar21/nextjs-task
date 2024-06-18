@@ -41,8 +41,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ leave, onClose, onSave }) => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     onSave(formData);
   };
 

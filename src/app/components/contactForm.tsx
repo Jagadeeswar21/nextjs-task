@@ -37,10 +37,8 @@ const ContactForm: React.FC<ContactFormProps> = ({ contact, onClose, onSave }) =
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     const newContact = { ...formData };
-
     try {
       let res;
       if (contact?._id) {
