@@ -14,23 +14,21 @@ interface Leave {
   status: 'active' | 'inactive';
   reason: string;
 }
-
 const LeavesPage: React.FC = () => {
   const [leaves, setLeaves] = useState<Leave[]>([]);
   const [editingLeave, setEditingLeave] = useState<Leave | null>(null);
   const [showForm, setShowForm] = useState<boolean>(false);
 
+  const fetchLeaves = async () => {
+    try {
+      const res = await fetch('/api/leaves');
+      const data: Leave[] = await res.json();
+      setLeaves(data);
+    } catch (error) {
+      console.error('Failed to fetch leaves', error);
+    }
+  };
   useEffect(() => {
-    const fetchLeaves = async () => {
-      try {
-        const res = await fetch('/api/leaves');
-        const data: Leave[] = await res.json();
-        setLeaves(data);
-      } catch (error) {
-        console.error('Failed to fetch leaves', error);
-      }
-    };
-
     fetchLeaves();
   }, []);
 
@@ -42,7 +40,6 @@ const LeavesPage: React.FC = () => {
   const handleSave = async (newLeave: Leave) => {
     try {
       if (editingLeave) {
-        // Update existing leave
         await fetch(`/api/leaves/${newLeave._id}`, {
           method: 'PUT',
           headers: {
@@ -55,7 +52,7 @@ const LeavesPage: React.FC = () => {
           position:"bottom-right"
         });
       } else {
-        // Add new leave
+      
         const res = await fetch('/api/leaves', {
           method: 'POST',
           headers: {
@@ -63,8 +60,8 @@ const LeavesPage: React.FC = () => {
           },
           body: JSON.stringify(newLeave),
         });
-        const addedLeave: Leave = await res.json();
-        setLeaves([...leaves, addedLeave]);
+        fetchLeaves()
+        
       }
     } catch (error) {
       console.error('Failed to save leave', error);
@@ -93,13 +90,13 @@ const LeavesPage: React.FC = () => {
       <table className="min-w-full border-collapse border border-gray-400 leading-normal">
         <thead>
           <tr>
-            <th className="border w-[14%] border-gray-400 p-1">Date</th>
-            <th className="border w-[14%] border-gray-400 p-1">Number of Leaves</th>
-            <th className="border w-[14%] border-gray-400 p-1">Number of Days</th>
+            <th className="border w-[8%] border-gray-400 p-1">Date</th>
+            <th className="border w-[8%] border-gray-400 p-1">Number of Leaves</th>
+            <th className="border w-[8%] border-gray-400 p-1">Number of Days</th>
             <th className="border w-[14%] border-gray-400 p-1">Date Range</th>
-            <th className="border w-[14%] border-gray-400 p-1">Status</th>
+            <th className="border w-[8%] border-gray-400 p-1">Status</th>
             <th className="border w-[20%] border-gray-400 p-1">Reason</th>
-            <th className="border w-[14%] border-gray-400 p-1">Actions</th>
+            <th className="border w-[8%] border-gray-400 p-1">Actions</th>
           </tr>
         </thead>
         <tbody>
