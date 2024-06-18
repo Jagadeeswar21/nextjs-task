@@ -1,9 +1,8 @@
-import { NextApiRequest, NextApiResponse } from 'next';
 import { connectMongoDB } from '../../../../lib/mongodb';
 import Leave from '../../../../models/leaveSchema';
 import { NextResponse } from 'next/server';
 
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
+export async function GET() {
   try {
     await connectMongoDB();
     const leaves = await Leave.find({});
