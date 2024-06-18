@@ -2,12 +2,16 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession,signOut } from 'next-auth/react';
+import toast from 'react-hot-toast';
 const Header: React.FC = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const handleLogout = async () => {
     try {
       await signOut({ redirect: false });
+      toast.success("Logout successful!",{
+        position:"bottom-right"
+      });
       router.push('/');
     } catch (error) {
       console.error('Failed to sign out', error);

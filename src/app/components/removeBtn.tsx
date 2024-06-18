@@ -3,11 +3,10 @@
 import React from 'react';
 import { HiTrash } from 'react-icons/hi';
 import { useRouter } from 'next/navigation';
-
+import toast from 'react-hot-toast';
 interface RemoveBtnProps {
   id: string;
 }
-
 const RemoveBtn: React.FC<RemoveBtnProps> = ({ id }) => {
   const router = useRouter()
 
@@ -22,6 +21,9 @@ const RemoveBtn: React.FC<RemoveBtnProps> = ({ id }) => {
       });
 
       if (res.ok) {
+        toast.success("successfully deleted!",{
+          position:"bottom-right"
+        });
         router.refresh();
       } else {
         console.error('Failed to update user status');

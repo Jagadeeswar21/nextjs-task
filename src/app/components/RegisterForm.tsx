@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
+import toast from "react-hot-toast";
 interface FormValues {
   name: string;
   email: string;
@@ -15,10 +15,6 @@ interface FormValues {
 
 const RegisterForm: React.FC = () => {
   const [error, setError] = useState<string>("");
-  const [role, setRole] = useState('user');
-
-
-
   const router = useRouter();
 
   const validationSchema = Yup.object({
@@ -61,6 +57,9 @@ const RegisterForm: React.FC = () => {
 
         if (res.ok) {
           resetForm();
+          toast.success("Registration successful!",{
+            position:"bottom-right"
+          });
           router.push("/");
         } else {
           setError("User registration failed.");

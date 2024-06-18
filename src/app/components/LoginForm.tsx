@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("")
@@ -26,7 +27,9 @@ export default function LoginForm() {
         setError("Invalid credentials")
         return;
       }
-
+      toast.success("Login successful!",{
+        position:"bottom-right"
+      });
       
       const sessionRes = await fetch("/api/auth/session")
       const session = await sessionRes.json()
