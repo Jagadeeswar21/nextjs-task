@@ -95,7 +95,7 @@ const LeavesPage: React.FC = () => {
             <th className="border w-[8%] border-gray-400 p-1">Date</th>
             <th className="border w-[8%] border-gray-400 p-1">Number of Leaves</th>
             <th className="border w-[8%] border-gray-400 p-1">Number of Days</th>
-            <th className="border w-[14%] border-gray-400 p-1">Date Range</th>
+            <th className="border w-[16%] border-gray-400 p-1">Date Range</th>
             <th className="border w-[8%] border-gray-400 p-1">Status</th>
             <th className="border w-[20%] border-gray-400 p-1">Reason</th>
             <th className="border w-[8%] border-gray-400 p-1">Actions</th>

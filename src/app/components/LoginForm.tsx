@@ -1,7 +1,7 @@
 
 'use client'
 import Link from "next/link";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
@@ -13,7 +13,8 @@ export default function LoginForm() {
 
   const router = useRouter()
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e:FormEvent) => {
+    e.preventDefault()
     try {
       const res = await signIn("credentials", {
         email,
