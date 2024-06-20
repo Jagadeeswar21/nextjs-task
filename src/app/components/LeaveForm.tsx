@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
 interface LeaveFormProps {
   leave: Leave | null;
@@ -16,9 +17,11 @@ interface Leave {
   endDate?: string;
   status: 'active' | 'inactive';
   reason: string;
+  user?:string
 }
 
 const LeaveForm: React.FC<LeaveFormProps> = ({ leave, onClose, onSave }) => {
+  const { data: session } = useSession();
   const [formData, setFormData] = useState<Leave>({
     _id: leave?._id || '',
     date: leave?.date || '',
@@ -60,7 +63,9 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ leave, onClose, onSave }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    if (session) {
+      onSave({ ...formData, user: session.user.id });
+    }
   };
 
   return (

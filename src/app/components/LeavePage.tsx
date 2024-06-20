@@ -4,6 +4,7 @@ import { HiPencilAlt } from 'react-icons/hi';
 import LeaveForm from './LeaveForm';
 import RemoveLeave from './RemoveLeave';
 import toast from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
 
 interface Leave {
   _id?: string;
@@ -15,14 +16,16 @@ interface Leave {
   dateRange: string;
   status: 'active' | 'inactive';
   reason: string;
+  user?:string
 }
 
 const LeavesPage: React.FC = () => {
   const [leaves, setLeaves] = useState<Leave[]>([]);
   const [editingLeave, setEditingLeave] = useState<Leave | null>(null);
   const [showForm, setShowForm] = useState<boolean>(false);
-
+  const {data:session, status}=useSession()
   const fetchLeaves = async () => {
+    if(!session) return
     try {
       const res = await fetch('/api/leaves');
       const data: Leave[] = await res.json();
@@ -33,8 +36,10 @@ const LeavesPage: React.FC = () => {
   };
 
   useEffect(() => {
+    if(session){
     fetchLeaves();
-  }, []);
+    }
+  }, [session]);
 
   const handleEdit = (leave: Leave) => {
     setEditingLeave(leave);
@@ -82,6 +87,12 @@ const LeavesPage: React.FC = () => {
       console.error('Failed to delete leave', error);
     }
   };
+  if (status==='loading') return <p>Loading...</p>;
+
+  if (status === 'unauthenticated') {
+    return <p>Please log in to view your leaves.</p>;
+  }
+
 
   return (
     <div className="p-4">

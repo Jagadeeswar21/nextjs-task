@@ -10,6 +10,11 @@ interface ILeave extends Document {
 }
 const leaveSchema: Schema = new Schema(
   {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     date: {
       type: Date,
       required: true,
