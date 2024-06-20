@@ -148,8 +148,8 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ leave, onClose, onSave }) => {
               className="border rounded p-1 w-full"
               required
             >
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
+              
+              <option value="pending">pending</option>
             </select>
           </div>
           <div className="mb-2">

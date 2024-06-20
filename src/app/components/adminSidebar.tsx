@@ -8,6 +8,9 @@ const Adminsidebar: React.FC = () => {
         <Link href="/adminDashboard/users"
            className="py-2 px-4 hover:bg-gray-700 rounded">Users
         </Link>
+        <Link href="/adminDashboard/leaves"
+           className="py-2 px-4 hover:bg-gray-700 rounded">Requests
+        </Link>
       </nav>
     </aside>
   );

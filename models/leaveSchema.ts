@@ -4,7 +4,7 @@ interface ILeave extends Document {
   numberofleaves: number;
   numberofdays: number;
   dateRange: string;
-  status: "active" | "inactive";
+  status: "pending" | "approved" | "rejected";
   reason: string;
   modifiedAt: Date;
 }
@@ -33,8 +33,8 @@ const leaveSchema: Schema = new Schema(
     },
     status: {
       type: String,
-      enum: ["active", "inactive"],
-      default: "active",
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
       required: true,
     },
     reason: {
