@@ -1,5 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+
 interface Contact {
   _id?: string;
   name: string;
@@ -7,12 +9,15 @@ interface Contact {
   phone: string;
   status: 'active' | 'inactive';
 }
+
 interface ContactFormProps {
-  contact: Contact |null
+  contact: Contact | null;
   onClose: () => void;
   onSave: (contact: Contact) => void;
 }
+
 const ContactForm: React.FC<ContactFormProps> = ({ contact, onClose, onSave }) => {
+  const { data: session } = useSession();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,7 +28,6 @@ const ContactForm: React.FC<ContactFormProps> = ({ contact, onClose, onSave }) =
   useEffect(() => {
     if (contact) {
       setFormData({
-        
         name: contact.name,
         email: contact.email,
         phone: contact.phone,
@@ -37,27 +41,25 @@ const ContactForm: React.FC<ContactFormProps> = ({ contact, onClose, onSave }) =
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async () => {
-    const newContact = { ...formData };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const newContact = { ...formData ,createdBy: session?.user?.id};
     try {
-      let res;
-      if (contact?._id) {
-        res = await fetch(`/api/contacts/${contact._id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(newContact),
-        });
-      } else {
-        res = await fetch('/api/contacts', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(newContact),
-        });
-      }
+      const res = contact?._id 
+        ? await fetch(`/api/contacts/${contact._id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newContact),
+          })
+        : await fetch('/api/contacts', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newContact),
+          });
 
       if (res.ok) {
         const savedContact = await res.json();
@@ -125,4 +127,5 @@ const ContactForm: React.FC<ContactFormProps> = ({ contact, onClose, onSave }) =
     </div>
   );
 };
+
 export default ContactForm;

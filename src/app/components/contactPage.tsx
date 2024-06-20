@@ -5,6 +5,7 @@ import ContactForm from './contactForm';
 import RemoveContact from './removeContact';
 import Pagination from './pagination';
 import toast from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
 interface Contact {
   _id?: string;
   name: string;
@@ -14,6 +15,7 @@ interface Contact {
 }
 
 const ContactsPage: React.FC = () => {
+  const {data:session, status}=useSession()
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const [showForm, setShowForm] = useState<boolean>(false);
@@ -22,6 +24,7 @@ const ContactsPage: React.FC = () => {
   const contactsPerPage = 5;
 
   useEffect(() => {
+    if(status==='authenticated'){
     const fetchContacts = async (page:number) => {
       try {
         const res = await fetch(`/api/contacts?page=${page}&limit=${contactsPerPage}`);
@@ -34,7 +37,8 @@ const ContactsPage: React.FC = () => {
     };
 
     fetchContacts(currentPage);
-  }, [currentPage]);
+  }
+  }, [currentPage,status]);
 
   const handleEdit = (contact: Contact) => {
     setEditingContact(contact);
@@ -58,6 +62,13 @@ const ContactsPage: React.FC = () => {
       const handlePageChange = (page: number) => {
           setCurrentPage(page);
       };
+      if(status==='loading'){
+        return <p>Loading...</p>
+      }
+      if (status === 'unauthenticated') {
+        return <p>Please log in to view your contacts.</p>;
+      }
+    
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
