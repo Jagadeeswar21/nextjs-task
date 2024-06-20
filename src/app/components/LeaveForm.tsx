@@ -12,6 +12,8 @@ interface Leave {
   numberofleaves: number;
   numberofdays: number;
   dateRange: string;
+  startDate?: string;
+  endDate?: string;
   status: 'active' | 'inactive';
   reason: string;
 }
@@ -23,6 +25,8 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ leave, onClose, onSave }) => {
     numberofleaves: leave?.numberofleaves || 0,
     numberofdays: leave?.numberofdays || 0,
     dateRange: leave?.dateRange || '',
+    startDate: leave?.startDate || '',
+    endDate: leave?.endDate || '',
     status: leave?.status || 'active',
     reason: leave?.reason || '',
   });
@@ -41,7 +45,21 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ leave, onClose, onSave }) => {
     }));
   };
 
-  const handleSubmit = async () => {
+  const updateDateRange = (startDate: string, endDate: string) => {
+    if (startDate && endDate) {
+      setFormData(prevState => ({
+        ...prevState,
+        dateRange: `${startDate} - ${endDate}`,
+      }));
+    }
+  };
+
+  useEffect(() => {
+    updateDateRange(formData.startDate!, formData.endDate!);
+  }, [formData.startDate, formData.endDate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     onSave(formData);
   };
 
@@ -84,12 +102,34 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ leave, onClose, onSave }) => {
             />
           </div>
           <div className="mb-2">
+            <label>Start Date</label>
+            <input
+              type="date"
+              name="startDate"
+              value={formData.startDate}
+              onChange={handleChange}
+              className="border rounded p-1 w-full"
+              required
+            />
+          </div>
+          <div className="mb-2">
+            <label>End Date</label>
+            <input
+              type="date"
+              name="endDate"
+              value={formData.endDate}
+              onChange={handleChange}
+              className="border rounded p-1 w-full"
+              required
+            />
+          </div>
+          <div className="mb-2">
             <label>Date Range</label>
             <input
               type="text"
               name="dateRange"
               value={formData.dateRange}
-              onChange={handleChange}
+              readOnly
               className="border rounded p-1 w-full"
               required
             />
