@@ -9,15 +9,24 @@ async function getUser(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
+  await connectMongoDB();
+  const { searchParams } = new URL(req.url as string, "http://localhost");
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  const limit = parseInt(searchParams.get('limit') || '5', 10);
+  const skip = (page - 1) * limit;
   try {
-    await connectMongoDB();
     const currentUser = await getUser(req);
     if (!currentUser) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const leaves = await Leave.find({ user: currentUser.sub });
-    console.log(leaves);
-    return NextResponse.json(leaves, { status: 200 });
+    const totalLeaves = await Leave.countDocuments({ user: currentUser.sub });
+    const leaves = await Leave.find({ user: currentUser.sub }).skip(skip).limit(limit).exec();
+    const totalPages = Math.ceil(totalLeaves / limit);
+    return NextResponse.json({
+      leaves,
+      totalPages,
+      currentPage: page,
+    });
   } catch (error) {
     console.error('Error fetching leaves:', error);
     return NextResponse.json({ message: 'Failed to fetch leaves' }, { status: 500 });

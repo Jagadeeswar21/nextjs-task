@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { HiPencilAlt } from 'react-icons/hi';
 import LeaveForm from './LeaveForm';
 import RemoveLeave from './RemoveLeave';
+import Pagination from './pagination';
 import toast from 'react-hot-toast';
 import { useSession } from 'next-auth/react';
 
@@ -24,12 +25,17 @@ const LeavesPage: React.FC = () => {
   const [editingLeave, setEditingLeave] = useState<Leave | null>(null);
   const [showForm, setShowForm] = useState<boolean>(false);
   const {data:session, status}=useSession()
-  const fetchLeaves = async () => {
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const leavesPerPage=5
+
+  const fetchLeaves = async (page:number) => {
     if(!session) return
     try {
-      const res = await fetch('/api/leaves');
-      const data: Leave[] = await res.json();
-      setLeaves(data);
+      const res = await fetch(`/api/leaves?page=${page}&limit=${leavesPerPage}`);
+      const data= await res.json();
+      setLeaves(data.leaves||[]);
+      setTotalPages(data.totalPages || 1);
     } catch (error) {
       console.error('Failed to fetch leaves', error);
     }
@@ -37,9 +43,9 @@ const LeavesPage: React.FC = () => {
 
   useEffect(() => {
     if(session){
-    fetchLeaves();
+    fetchLeaves(currentPage);
     }
-  }, [session]);
+  }, [session,currentPage]);
 
   const handleEdit = (leave: Leave) => {
     setEditingLeave(leave);
@@ -70,7 +76,7 @@ const LeavesPage: React.FC = () => {
           },
           body: JSON.stringify(newLeave),
         });
-        fetchLeaves();
+        fetchLeaves(currentPage);
       }
     } catch (error) {
       console.error('Failed to save leave', error);
@@ -87,6 +93,11 @@ const LeavesPage: React.FC = () => {
       console.error('Failed to delete leave', error);
     }
   };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   if (status==='loading') return <p>Loading...</p>;
 
   if (status === 'unauthenticated') {
@@ -133,6 +144,12 @@ const LeavesPage: React.FC = () => {
           ))}
         </tbody>
       </table>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
 
       {showForm && (
         <LeaveForm
