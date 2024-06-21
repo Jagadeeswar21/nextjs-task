@@ -14,7 +14,7 @@ interface Leave {
   startDate?: string;
   endDate?: string;
   dateRange: string;
-  status: 'active' | 'inactive';
+  status: 'pending' | 'approved'|'rejected';
   reason: string;
   user?:string
 }

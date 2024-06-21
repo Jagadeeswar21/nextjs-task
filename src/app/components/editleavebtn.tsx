@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { HiPencilAlt } from 'react-icons/hi';
 import { useRouter } from 'next/navigation';
-
+import toast from 'react-hot-toast';
 interface EditLeaveBtnProps {
   id: string;
   currentStatus: string;
@@ -25,6 +25,9 @@ const EditLeaveBtn: React.FC<EditLeaveBtnProps> = ({ id, currentStatus }) => {
 
       if (res.ok) {
         setIsOpen(false);
+        toast.success("status updated!", {
+          position: "bottom-right"
+        });
         router.refresh();
       } else {
         console.error('Failed to update leave status');

@@ -11,11 +11,8 @@ async function getUser(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     await connectMongoDB();
-    const currentUser = await getUser(req);
-    if (!currentUser) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    }
-    const leaves = await Leave.find({ user: currentUser.sub });
+   
+    const leaves = await Leave.find({});
     console.log(leaves);
     return NextResponse.json(leaves, { status: 200 });
   } catch (error) {

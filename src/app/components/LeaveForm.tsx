@@ -15,7 +15,7 @@ interface Leave {
   dateRange: string;
   startDate?: string;
   endDate?: string;
-  status: 'active' | 'inactive';
+  status: 'pending' | 'approved'|'rejected';
   reason: string;
   user?:string
 }
@@ -30,7 +30,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ leave, onClose, onSave }) => {
     dateRange: leave?.dateRange || '',
     startDate: leave?.startDate || '',
     endDate: leave?.endDate || '',
-    status: leave?.status || 'active',
+    status: leave?.status || 'pending',
     reason: leave?.reason || '',
   });
 
