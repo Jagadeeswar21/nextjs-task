@@ -19,7 +19,7 @@ export default function LeaveList() {
   const [leaves, setLeaves] = useState([]);
   const getLeaves = async () => {
     try {
-      const res = await fetch("/api/leaves", {
+      const res = await fetch("/api/leaves/edit", {
         cache: "no-store",
       });
 
