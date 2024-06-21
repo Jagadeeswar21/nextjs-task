@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import EditLeaveBtn from "./editleavebtn";
 import RemoveLeave from "./removeleavebtn";
+import Pagination from './pagination';
 
 export interface Leave {
   _id: string;
@@ -16,26 +17,36 @@ export interface Leave {
 }
 
 export default function LeaveList() {
-  const [leaves, setLeaves] = useState([]);
-  const getLeaves = async () => {
+  const [leaves, setLeaves] = useState<Leave[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const leavesPerPage = 2;
+
+  const getLeaves = async (page: number) => {
     try {
-      const res = await fetch("/api/leaves/edit", {
+      const res = await fetch(`/api/leaves/edit?page=${page}&limit=${leavesPerPage}`, {
         cache: "no-store",
       });
 
       if (!res.ok) {
         throw new Error("Failed to fetch leaves");
       }
-      let leaves = await res.json();
-      setLeaves(leaves);
+      const data = await res.json();
+      setLeaves(data.leaves || []);
+      setTotalPages(data.totalPages || 1);
     } catch (error) {
       console.log("Error loading leave details: ", error);
     }
   };
+
   useEffect(() => {
-    getLeaves();
-  }, []);
-  console.log(leaves);
+    getLeaves(currentPage);
+  }, [currentPage]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
     <>
       {leaves?.map((leave: Leave) => (
@@ -63,6 +74,12 @@ export default function LeaveList() {
           </div>
         </div>
       ))}
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </>
   );
 }
