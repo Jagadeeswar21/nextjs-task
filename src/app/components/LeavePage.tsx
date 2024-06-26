@@ -15,26 +15,26 @@ interface Leave {
   startDate?: string;
   endDate?: string;
   dateRange: string;
-  status: 'pending' | 'approved'|'rejected';
+  status: 'pending' | 'approved' | 'rejected';
   reason: string;
-  user?:string
+  user?: string
 }
 
 const LeavesPage: React.FC = () => {
   const [leaves, setLeaves] = useState<Leave[]>([]);
   const [editingLeave, setEditingLeave] = useState<Leave | null>(null);
   const [showForm, setShowForm] = useState<boolean>(false);
-  const {data:session, status}=useSession()
+  const { data: session, status } = useSession()
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const leavesPerPage=5
+  const leavesPerPage = 5
 
-  const fetchLeaves = async (page:number) => {
-    if(!session) return
+  const fetchLeaves = async (page: number) => {
+    if (!session) return
     try {
       const res = await fetch(`/api/leaves?page=${page}&limit=${leavesPerPage}`);
-      const data= await res.json();
-      setLeaves(data.leaves||[]);
+      const data = await res.json();
+      setLeaves(data.leaves || []);
       setTotalPages(data.totalPages || 1);
     } catch (error) {
       console.error('Failed to fetch leaves', error);
@@ -42,10 +42,10 @@ const LeavesPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if(session){
-    fetchLeaves(currentPage);
+    if (session) {
+      fetchLeaves(currentPage);
     }
-  }, [session,currentPage]);
+  }, [session, currentPage]);
 
   const handleEdit = (leave: Leave) => {
     setEditingLeave(leave);
@@ -98,7 +98,7 @@ const LeavesPage: React.FC = () => {
     setCurrentPage(page);
   };
 
-  if (status==='loading') return <p>Loading...</p>;
+  if (status === 'loading') return <p>Loading...</p>;
 
   if (status === 'unauthenticated') {
     return <p>Please log in to view your leaves.</p>;

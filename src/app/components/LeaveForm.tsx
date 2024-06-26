@@ -15,9 +15,9 @@ interface Leave {
   dateRange: string;
   startDate?: string;
   endDate?: string;
-  status: 'pending' | 'approved'|'rejected';
+  status: 'pending' | 'approved' | 'rejected';
   reason: string;
-  user?:string
+  user?: string
 }
 
 const LeaveForm: React.FC<LeaveFormProps> = ({ leave, onClose, onSave }) => {
@@ -148,7 +148,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ leave, onClose, onSave }) => {
               className="border rounded p-1 w-full"
               required
             >
-              
+
               <option value="pending">pending</option>
             </select>
           </div>

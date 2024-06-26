@@ -15,7 +15,7 @@ interface Contact {
 }
 
 const ContactsPage: React.FC = () => {
-  const {data:session, status}=useSession()
+  const { data: session, status } = useSession()
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const [showForm, setShowForm] = useState<boolean>(false);
@@ -24,21 +24,21 @@ const ContactsPage: React.FC = () => {
   const contactsPerPage = 5;
 
   useEffect(() => {
-    if(status==='authenticated'){
-    const fetchContacts = async (page:number) => {
-      try {
-        const res = await fetch(`/api/contacts?page=${page}&limit=${contactsPerPage}`);
-        const data = await res.json();
-        setContacts(data.contacts||[]);
-        setTotalPages(data.totalPages||1)
-      } catch (error) {
-        console.error('Failed to fetch contacts', error);
-      }
-    };
+    if (status === 'authenticated') {
+      const fetchContacts = async (page: number) => {
+        try {
+          const res = await fetch(`/api/contacts?page=${page}&limit=${contactsPerPage}`);
+          const data = await res.json();
+          setContacts(data.contacts || []);
+          setTotalPages(data.totalPages || 1)
+        } catch (error) {
+          console.error('Failed to fetch contacts', error);
+        }
+      };
 
-    fetchContacts(currentPage);
-  }
-  }, [currentPage,status]);
+      fetchContacts(currentPage);
+    }
+  }, [currentPage, status]);
 
   const handleEdit = (contact: Contact) => {
     setEditingContact(contact);
@@ -51,24 +51,24 @@ const ContactsPage: React.FC = () => {
     } else {
       setContacts([...contacts, updatedContact]);
     }
-    toast.success("Successfully created!",{
-      position:"bottom-right"
+    toast.success("Successfully created!", {
+      position: "bottom-right"
     });
     setShowForm(false);
   };
   const handleDelete = (id: string) => {
-      setContacts(contacts.filter(contact => contact._id !== id));
-      }
-      const handlePageChange = (page: number) => {
-          setCurrentPage(page);
-      };
-      if(status==='loading'){
-        return <p>Loading...</p>
-      }
-      if (status === 'unauthenticated') {
-        return <p>Please log in to view your contacts.</p>;
-      }
-    
+    setContacts(contacts.filter(contact => contact._id !== id));
+  }
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+  if (status === 'loading') {
+    return <p>Loading...</p>
+  }
+  if (status === 'unauthenticated') {
+    return <p>Please log in to view your contacts.</p>;
+  }
+
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
@@ -98,7 +98,7 @@ const ContactsPage: React.FC = () => {
                 <button onClick={() => handleEdit(contact)} className="text-blue-500 hover:text-blue-700 p-2">
                   <HiPencilAlt />
                 </button>
-                <RemoveContact id={contact._id!} onDelete={()=>handleDelete(contact._id!)}/>
+                <RemoveContact id={contact._id!} onDelete={() => handleDelete(contact._id!)} />
               </td>
             </tr>
           ))}

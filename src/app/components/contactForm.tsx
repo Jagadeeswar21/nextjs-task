@@ -43,23 +43,23 @@ const ContactForm: React.FC<ContactFormProps> = ({ contact, onClose, onSave }) =
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newContact = { ...formData ,createdBy: session?.user?.id};
+    const newContact = { ...formData, createdBy: session?.user?.id };
     try {
-      const res = contact?._id 
+      const res = contact?._id
         ? await fetch(`/api/contacts/${contact._id}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newContact),
-          })
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newContact),
+        })
         : await fetch('/api/contacts', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newContact),
-          });
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newContact),
+        });
 
       if (res.ok) {
         const savedContact = await res.json();
