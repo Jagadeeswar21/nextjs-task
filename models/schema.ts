@@ -10,9 +10,21 @@ const userSchema=new Schema(
             type:String,
             required:true
         },
-        password: {
+        mobileNumber: {
             type: String,
-            required: false
+            required: false,
+        },
+        gender: {
+            type: String,
+            required: false,
+        },
+        dateOfBirth: {
+            type: String,
+            required: false,
+        },
+        password:{
+            type:String,
+            required:true
         },
         status:{
             type:String,
