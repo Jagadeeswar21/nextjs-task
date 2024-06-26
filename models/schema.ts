@@ -24,7 +24,7 @@ const userSchema=new Schema(
         },
         password:{
             type:String,
-            required:false
+            required:false,
         },
         status:{
             type:String,
@@ -51,6 +51,10 @@ const userSchema=new Schema(
             default: "credentials",
             required: true,
           },
+          profilePicture: {
+            type: String,
+            required: false,
+          }
     },
 
     {timestamps:true}
