@@ -1,19 +1,36 @@
-
 'use client'
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-
+import { useSession } from "next-auth/react";
 export default function LoginForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
+  const{data:session}=useSession()
+  console.log(session)
 
   const router = useRouter()
 
-  const handleSubmit = async (e:FormEvent) => {
+  const checkUserRole = async () => {
+    try {
+      const sessionRes = await fetch("/api/auth/session");
+      const sessionData = await sessionRes.json();
+  
+      if (sessionData?.user?.role === "admin") {
+        router.push("/adminDashboard");
+      } else {
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      console.error("Error checking user role:", error);
+      setError("An error occurred. Please try again.");
+    }
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     try {
       const res = await signIn("credentials", {
@@ -26,20 +43,30 @@ export default function LoginForm() {
         setError("Invalid credentials")
         return;
       }
-      toast.success("Login successful!",{
-        position:"bottom-right"
+      toast.success("Login successful!", {
+        position: "bottom-right"
       });
-      
-      const sessionRes = await fetch("/api/auth/session")
-      const session = await sessionRes.json()
 
-      if (session?.user?.role === "admin") {
-        router.push("/adminDashboard")
-      } else {
-        router.push("/dashboard")
-      }
+      await checkUserRole();
     } catch (error) {
       console.error(error);
+      setError("An error occurred. Please try again.");
+    }
+  };
+
+  const handleGoogleSignIn = async (e:FormEvent) => {
+    e.preventDefault()
+    try {
+      const res = await signIn("google", { redirect: false });
+      if (res?.error) {
+        setError("Failed to sign in with Google");
+        return;
+      }
+      toast.success("Login successful!", {
+        position: "bottom-right"
+      });
+      await checkUserRole();
+    } catch (error) {
       setError("An error occurred. Please try again.");
     }
   };
@@ -67,10 +94,16 @@ export default function LoginForm() {
               {error}
             </div>
           )}
-          <Link className="text-sm mt-3 text-right" href="/Register">
-            Don t have an account? <span className="underline">Register</span>
-          </Link>
         </form>
+        <button
+          onClick={handleGoogleSignIn}
+          className="bg-orange-400 text-white font-bold px-4 py-2 mt-3 w-fit"
+        >
+          Sign in with Google
+        </button>
+        <Link className="text-sm mt-3 text-right" href="/Register">
+          or Don t have an account? <span className="underline">Register</span>
+        </Link>
       </div>
     </div>
   );

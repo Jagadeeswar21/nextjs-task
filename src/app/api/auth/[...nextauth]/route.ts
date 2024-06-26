@@ -4,7 +4,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import User from '../../../../../models/schema';
 import bcrypt from 'bcryptjs';
 import { connectMongoDB } from '../../../../../lib/mongodb';
-
+import GoogleProvider from 'next-auth/providers/google';
 const authOptions = {
   providers: [
     CredentialsProvider({
@@ -36,19 +36,60 @@ const authOptions = {
         }
       }
     }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code"
+        }
+      }
+    }),
   ],
   callbacks: {
-    async session({ session, token }:{session:any, token:any}) {
-      session.user.id=token.sub
-      session.user.role = token.role
-      return session;
-    },
-    async jwt({ token, user }:{ token: any; user?: any }) {
-      if (user) {
-        token.sub=user.id
-        token.role = user.role
+    async signIn({ account, profile }:any) {
+      if (account.provider === 'google' && profile?.email) {
+        try {
+          await connectMongoDB();
+          let user = await User.findOne({ email: profile.email });
+          if (!user) {
+            console.log("Creating new user", profile.email);
+            user = await User.create({
+              name: profile.name || 'Google User',
+              email: profile.email,
+              password: null,
+              status: 'active',
+              role: 'user',
+              isDeleted: false,
+              provider:'google',
+            });
+          } 
+          return true;
+        } catch (error) {
+          console.error('Error during Google Sign-In:', error);
+          return false;
+        }
       }
-      return token
+      return true;
+    },
+    async jwt({ token, user }:any) {
+      if (user) {
+        token.sub= user._id;
+        token.role = user.role;
+      }
+      return token;
+    },
+    async redirect({ url, baseUrl }:any) {
+      return url.startsWith(baseUrl) ? `${baseUrl}/dashboard` : baseUrl;
+    },
+    async session({ session, token }:any) {
+      if (token) {
+        session.user.id = token.sub;
+        session.user.role = token.role;
+      }
+      return session;
     },
   },
   session: {

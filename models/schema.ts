@@ -10,9 +10,9 @@ const userSchema=new Schema(
             type:String,
             required:true
         },
-        password:{
-            type:String,
-            required:true
+        password: {
+            type: String,
+            required: false
         },
         status:{
             type:String,
@@ -27,13 +27,20 @@ const userSchema=new Schema(
         role: {
             type: String,
             enum: ["admin", "user"],
-            required: false,
+            required: true,
           },
           isDeleted: {
             type: Boolean,
             default: false,
           },
+          provider: {
+            type: String,
+            enum: ["credentials", "google"],
+            default: "credentials",
+            required: true,
+          },
     },
+
     {timestamps:true}
 )
 
