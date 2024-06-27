@@ -1,9 +1,10 @@
 import { connectMongoDB } from "../../../../../lib/mongodb";
 import User from "../../../../../models/schema";
-import { NextResponse } from "next/server";
+import { NextResponse,NextRequest } from "next/server";
 import multer from 'multer';
 import { promisify } from 'util';
 import path from 'path';
+import { getToken } from "next-auth/jwt";
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const upload = multer({
   storage: multer.diskStorage({
@@ -29,9 +30,13 @@ export const config = {
   },
 };
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest ) {
   try {
-    const { id } = params;
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    if (!token) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
+    await multerUpload(req as any, {} as any)
     await connectMongoDB();
     const formData = await req.formData();
     const name = formData.get('name') as string;
@@ -59,7 +64,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       fs.writeFileSync(`./public${profilePicturePath}`, Buffer.from(buffer));
     }
 
-    const user = await User.findByIdAndUpdate(id, updateData, { new: true }).select('-password');
+    const user = await User.findOneAndUpdate({email:token.email}, updateData, { new: true }).select('-password');
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });

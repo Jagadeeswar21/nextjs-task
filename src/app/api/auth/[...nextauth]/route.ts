@@ -66,6 +66,11 @@ const authOptions = {
               provider:'google',
             });
           } 
+          else {
+            // Update existing user with name from Google
+            user.name = profile.name;
+            await user.save();
+          }
           return true;
         } catch (error) {
           console.error('Error during Google Sign-In:', error);
@@ -78,6 +83,8 @@ const authOptions = {
       if (user) {
         token.sub= user._id;
         token.role = user.role;
+        token.name = user.name; 
+        token.email = user.email;
       }
       return token;
     },
@@ -88,6 +95,8 @@ const authOptions = {
       if (token) {
         session.user.id = token.sub;
         session.user.role = token.role;
+        session.user.name = token.name;
+        session.user.email = token.email;
       }
       return session;
     },

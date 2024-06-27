@@ -2,9 +2,7 @@ import { connectMongoDB } from "../../../../lib/mongodb";
 import User from "../../../../models/schema";
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-type Params = {
-  id: string;
-};
+
 async function getUser(req: NextRequest) {
   const token = await getToken({ req });
   return token;
@@ -17,7 +15,7 @@ export async function GET(req: NextRequest) {
     }
 
     await connectMongoDB();
-    const user = await User.findById(currentUser.sub).select("-password");
+    const user = await User.findOne({email:currentUser.email}).select("-password");
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
