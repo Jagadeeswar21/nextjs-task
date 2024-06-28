@@ -1,16 +1,22 @@
-
+'use client'
+import { useEffect, useState } from "react";
 import RemoveBtn from './removeBtn';
 import EditBtn from './editBtn';
+
 export interface User {
-    _id: string
-    name: string
-    email: string
-    status:string
-  }
+  _id: string;
+  name: string;
+  email: string;
+  status: string;
+}
+
+interface UserListProps {
+  role: string;
+}
 
 const getUsers = async () => {
   try {
-    const res = await fetch("http://localhost:3000/api/users", {
+    const res = await fetch("/api/users", {
       cache: "no-store",
     });
 
@@ -25,8 +31,18 @@ const getUsers = async () => {
   }
 };
 
-export default async function usersList(){
-    const {users}=await getUsers()
+const UserList = ({ role }: UserListProps) => {
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const data = await getUsers();
+      setUsers(data.users || []);
+    };
+
+    fetchUsers();
+  }, []);
+
   return (
     <>
       {users?.map((user: User) => (
@@ -40,7 +56,7 @@ export default async function usersList(){
             <div>{user.status}</div>
           </div>
           <div className="flex gap-2">
-            <RemoveBtn id={user._id} />
+            {role === "admin" && <RemoveBtn id={user._id} />}
             <EditBtn id={user._id} currentStatus={user.status} />
           </div>
         </div>
@@ -48,3 +64,5 @@ export default async function usersList(){
     </>
   );
 };
+
+export default UserList;

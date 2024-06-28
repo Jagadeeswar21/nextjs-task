@@ -49,7 +49,7 @@ const authOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ account, profile }:any) {
+    async signIn({ account, profile }: any) {
       if (account.provider === 'google' && profile?.email) {
         try {
           await connectMongoDB();
@@ -63,11 +63,10 @@ const authOptions = {
               status: 'active',
               role: 'user',
               isDeleted: false,
-              provider:'google',
+              provider: 'google',
             });
-          } 
+          }
           else {
-            // Update existing user with name from Google
             user.name = profile.name;
             await user.save();
           }
@@ -79,19 +78,19 @@ const authOptions = {
       }
       return true;
     },
-    async jwt({ token, user }:any) {
+    async jwt({ token, user }: any) {
       if (user) {
-        token.sub= user._id;
+        token.sub = user._id;
         token.role = user.role;
-        token.name = user.name; 
+        token.name = user.name;
         token.email = user.email;
       }
       return token;
     },
-    async redirect({ url, baseUrl }:any) {
+    async redirect({ url, baseUrl }: any) {
       return url.startsWith(baseUrl) ? `${baseUrl}/dashboard` : baseUrl;
     },
-    async session({ session, token }:any) {
+    async session({ session, token }: any) {
       if (token) {
         session.user.id = token.sub;
         session.user.role = token.role;

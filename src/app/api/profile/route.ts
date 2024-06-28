@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     }
 
     await connectMongoDB();
-    const user = await User.findOne({email:currentUser.email}).select("-password");
+    const user = await User.findOne({ email: currentUser.email }).select("-password");
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });

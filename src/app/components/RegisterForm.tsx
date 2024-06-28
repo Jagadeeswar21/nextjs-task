@@ -122,6 +122,7 @@ const RegisterForm: React.FC = () => {
           <option value="" disabled>Select role</option>
           <option value="user">User</option>
           <option value="admin">Admin</option>
+          <option value="manager">Manager</option>
         </select>
         {formik.touched.role && formik.errors.role ? (
           <div className="text-red-500 text-sm">{formik.errors.role}</div>

@@ -36,9 +36,10 @@ const userSchema=new Schema(
             type: Date,
             default: Date.now,
           },
-        role: {
-            type: String,
-            enum: ["admin", "user"],
+        roles: {
+            type: [String],
+            enum: ["admin", "user","manager"],
+            default:["user"],
             required: true,
           },
           isDeleted: {

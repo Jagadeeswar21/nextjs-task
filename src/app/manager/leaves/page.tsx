@@ -1,8 +1,8 @@
 import LeaveList from "@/app/components/leaveslist"
-export default function UserDetails(){
-  const user = { role: "admin" }
+const LeaveDetails=()=>{
+    const user = { role: "manager" }
     return <div>
       <LeaveList role={user.role}/>
-     
     </div>
 }
+export default LeaveDetails

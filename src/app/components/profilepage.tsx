@@ -23,7 +23,7 @@ const Profile: React.FC = () => {
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [gender, setGender] = useState('');
-  const [profilePicture, setProfilePicture] = useState<File | null>(null); 
+  const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [displayProfilePic, setDisplayProfilePic] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 

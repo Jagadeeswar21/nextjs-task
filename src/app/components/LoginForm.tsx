@@ -9,27 +9,26 @@ export default function LoginForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
-  const{data:session}=useSession()
+  const { data: session } = useSession()
   console.log(session)
-
   const router = useRouter()
-
   const checkUserRole = async () => {
     try {
       const sessionRes = await fetch("/api/auth/session");
       const sessionData = await sessionRes.json();
-  
+
       if (sessionData?.user?.role === "admin") {
         router.push("/adminDashboard");
-      } else {
+      } else if(session?.user?.role==="user") {
         router.push("/dashboard");
+      }else{
+        router.push("/manager")
       }
     } catch (error) {
       console.error("Error checking user role:", error);
       setError("An error occurred. Please try again.");
     }
   };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     try {
@@ -46,7 +45,6 @@ export default function LoginForm() {
       toast.success("Login successful!", {
         position: "bottom-right"
       });
-
       await checkUserRole();
     } catch (error) {
       console.error(error);
@@ -54,7 +52,7 @@ export default function LoginForm() {
     }
   };
 
-  const handleGoogleSignIn = async (e:FormEvent) => {
+  const handleGoogleSignIn = async (e: FormEvent) => {
     e.preventDefault()
     try {
       const res = await signIn("google", { redirect: false });
@@ -62,10 +60,6 @@ export default function LoginForm() {
         setError("Failed to sign in with Google");
         return;
       }
-      toast.success("Login successful!", {
-        position: "bottom-right"
-      });
-      await checkUserRole();
     } catch (error) {
       setError("An error occurred. Please try again.");
     }

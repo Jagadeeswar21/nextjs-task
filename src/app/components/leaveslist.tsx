@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import EditLeaveBtn from "./editleavebtn";
 import RemoveLeave from "./removeleavebtn";
 import Pagination from './pagination';
-
+interface LeaveListProps {
+  role: string;
+}
 export interface Leave {
   _id: string;
   date: string;
@@ -16,7 +18,7 @@ export interface Leave {
   reason: string;
 }
 
-export default function LeaveList() {
+export default function LeaveList({ role }: LeaveListProps) {
   const [leaves, setLeaves] = useState<Leave[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -69,7 +71,7 @@ export default function LeaveList() {
             <div>Reason: {leave.reason}</div>
           </div>
           <div className="flex gap-2">
-            <RemoveLeave id={leave._id} />
+          {role === "admin" && <RemoveLeave id={leave._id} />}
             <EditLeaveBtn id={leave._id} currentStatus={leave.status} />
           </div>
         </div>

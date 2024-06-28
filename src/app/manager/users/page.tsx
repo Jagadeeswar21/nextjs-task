@@ -1,9 +1,8 @@
 import UsersList from "@/app/components/usersList"
-export default function UserDetails(){
-  const user = { role: "admin" }
+const UserDetails=()=>{
+    const user = { role: "manager" }
     return <div>
       <UsersList role={user.role}/>
     </div>
-    
-    
 }
+export default UserDetails

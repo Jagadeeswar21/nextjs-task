@@ -1,6 +1,6 @@
 import { connectMongoDB } from "../../../../../lib/mongodb";
 import User from "../../../../../models/schema";
-import { NextResponse,NextRequest } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import multer from 'multer';
 import { promisify } from 'util';
 import path from 'path';
@@ -30,7 +30,7 @@ export const config = {
   },
 };
 
-export async function PUT(req: NextRequest ) {
+export async function PUT(req: NextRequest) {
   try {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
     if (!token) {
@@ -64,7 +64,7 @@ export async function PUT(req: NextRequest ) {
       fs.writeFileSync(`./public${profilePicturePath}`, Buffer.from(buffer));
     }
 
-    const user = await User.findOneAndUpdate({email:token.email}, updateData, { new: true }).select('-password');
+    const user = await User.findOneAndUpdate({ email: token.email }, updateData, { new: true }).select('-password');
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
