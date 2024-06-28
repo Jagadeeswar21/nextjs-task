@@ -48,7 +48,7 @@ const userSchema=new Schema(
           },
           provider: {
             type: String,
-            enum: ["credentials", "google"],
+            enum: ["credentials", "google", "github"],
             default: "credentials",
             required: true,
           },

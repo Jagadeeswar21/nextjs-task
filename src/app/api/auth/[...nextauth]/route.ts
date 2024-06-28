@@ -5,6 +5,7 @@ import User from '../../../../../models/schema';
 import bcrypt from 'bcryptjs';
 import { connectMongoDB } from '../../../../../lib/mongodb';
 import GoogleProvider from 'next-auth/providers/google';
+import GithubProvider from 'next-auth/providers/github';
 const authOptions = {
   providers: [
     CredentialsProvider({
@@ -47,32 +48,37 @@ const authOptions = {
         }
       }
     }),
+    GithubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID as string,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+
+    })
   ],
   callbacks: {
-    async signIn({ account, profile }: any) {
-      if (account.provider === 'google' && profile?.email) {
+    async signIn({ account, profile }:any) {
+      if ((account.provider === 'google' || account.provider === 'github') && profile?.email) {
         try {
           await connectMongoDB();
           let user = await User.findOne({ email: profile.email });
           if (!user) {
             console.log("Creating new user", profile.email);
             user = await User.create({
-              name: profile.name || 'Google User',
+              name: profile.name || 'user',
               email: profile.email,
               password: null,
               status: 'active',
               role: 'user',
               isDeleted: false,
-              provider: 'google',
+              provider:account.provider,
             });
           }
           else {
-            user.name = profile.name;
+            user.email = profile.email;
             await user.save();
           }
           return true;
         } catch (error) {
-          console.error('Error during Google Sign-In:', error);
+          console.error(`Error during ${account.provider} Sign-In:`, error);
           return false;
         }
       }
