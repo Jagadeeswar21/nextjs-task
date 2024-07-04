@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { useEffect, useState } from "react";
 import RemoveBtn from './removeBtn';
 import EditBtn from './editBtn';
@@ -44,24 +44,33 @@ const UserList = ({ role }: UserListProps) => {
   }, []);
 
   return (
-    <>
-      {users?.map((user: User) => (
-        <div
-          key={user._id}
-          className="p-4 border border-slate-300 my-3 flex justify-between gap-5 items-start"
-        >
-          <div>
-            <h2 className="font-bold text-2xl">{user.name}</h2>
-            <div>{user.email}</div>
-            <div>{user.status}</div>
-          </div>
-          <div className="flex gap-2">
-            {role === "admin" && <RemoveBtn id={user._id} />}
-            <EditBtn id={user._id} currentStatus={user.status} />
-          </div>
-        </div>
-      ))}
-    </>
+    <div className="p-4">
+      <table className="min-w-full border-collapse border border-gray-400 leading-normal">
+        <thead>
+          <tr>
+            <th className="border w-[25%] border-gray-400 p-1">Name</th>
+            <th className="border w-[35%] border-gray-400 p-1">Email</th>
+            <th className="border w-[20%] border-gray-400 p-1">Status</th>
+            <th className="border w-[20%] border-gray-400 p-1">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users?.map((user: User) => (
+            <tr key={user._id}>
+              <td className="border border-gray-400 p-1">{user.name}</td>
+              <td className="border border-gray-400 p-1">{user.email}</td>
+              <td className="border border-gray-400 p-1">{user.status}</td>
+              <td className="border border-gray-400 p-1 flex justify-center items-center">
+                <div className="flex gap-2">
+                  {role === "admin" && <RemoveBtn id={user._id} />}
+                  {(role === "admin" || role === "manager") && <EditBtn id={user._id} currentStatus={user.status} />}
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 
