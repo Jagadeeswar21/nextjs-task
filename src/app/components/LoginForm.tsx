@@ -106,11 +106,17 @@ export default function LoginForm() {
             </div>
           )}
         </form>
-        
-        
+        <div className="flex justify-between w-full mt-3">
+        <Link className="text-sm mt-3 underline" href="/forget-password">Forgot Password?</Link>
         <Link className="text-sm mt-3 text-right flex justify-end" href="/Register">
           or Don t have an account? <span className="underline">Register</span>
         </Link>
+        </div>
+        <div className="flex items-center justify-center my-2">
+          <div className="border-t border-gray-400 flex-grow"></div>
+          <span className="mx-2 text-gray-500">or</span>
+          <div className="border-t border-gray-400 flex-grow"></div>
+        </div>
         <button
           onClick={handleGoogleSignIn}
           className="bg-orange-400 rounded-lg text-white font-bold px-4 py-2 mt-3 flex w-full justify-center items-center"

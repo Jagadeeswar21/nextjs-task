@@ -55,6 +55,14 @@ const userSchema=new Schema(
           profilePicture: {
             type: String,
             required: false,
+          },
+          resetToken:{
+            type: String,
+            required: false
+          },
+          resetTokenExpiry:{
+            type: Date,
+            required: false
           }
     },
 
