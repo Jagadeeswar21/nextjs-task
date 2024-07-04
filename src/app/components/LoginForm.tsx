@@ -20,12 +20,12 @@ export default function LoginForm() {
       const sessionRes = await fetch("/api/auth/session");
       const sessionData = await sessionRes.json();
 
-      if (sessionData?.user?.role === "admin") {
+      if (sessionData?.user?.roles.includes("admin")) {
         router.push("/adminDashboard");
-      } else if(session?.user?.role==="user") {
+      } else if(sessionData?.user?.roles.includes("user")) {
         router.push("/dashboard");
-      }else{
-        router.push("/manager")
+      }if(sessionData?.user?.roles.includes("manager")) {
+        router.push("/manager");
       }
     } catch (error) {
       console.error("Error checking user role:", error);
@@ -76,10 +76,7 @@ export default function LoginForm() {
         setError("Failed to sign in with GitHub");
         return;
       }
-      toast.success("Login successful!", {
-        position: "bottom-right"
-      });
-      await checkUserRole();
+     // await checkUserRole();
     } catch (error) {
       setError("An error occurred. Please try again.");
     }
@@ -116,7 +113,7 @@ export default function LoginForm() {
         </Link>
         <button
           onClick={handleGoogleSignIn}
-          className="bg-blue-500 hover:bg-blue-700 rounded-lg text-white font-bold px-4 py-2 mt-3 flex w-full justify-center items-center"
+          className="bg-orange-400 rounded-lg text-white font-bold px-4 py-2 mt-3 flex w-full justify-center items-center"
         >
           Sign in with Google
         </button>
@@ -128,7 +125,7 @@ export default function LoginForm() {
         
         <button
           onClick={handleGitHubSignIn}
-          className="bg-blue-500 hover:bg-blue-700 rounded-lg text-white font-bold px-4 py-2 mt-3 flex w-full justify-center items-center "
+          className="bg-orange-400 rounded-lg text-white font-bold px-4 py-2 mt-3 flex w-full justify-center items-center "
         >
           Sign in with GitHub
         </button>

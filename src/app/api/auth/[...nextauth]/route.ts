@@ -67,7 +67,7 @@ const authOptions = {
               email: profile.email,
               password: null,
               status: 'active',
-              role: 'user',
+              roles: ['user'],
               isDeleted: false,
               provider:account.provider,
             });
@@ -87,7 +87,7 @@ const authOptions = {
     async jwt({ token, user }: any) {
       if (user) {
         token.sub = user._id;
-        token.role = user.role;
+        token.roles = user.roles;
         token.name = user.name;
         token.email = user.email;
       }
@@ -99,7 +99,7 @@ const authOptions = {
     async session({ session, token }: any) {
       if (token) {
         session.user.id = token.sub;
-        session.user.role = token.role;
+        session.user.roles = token.roles;
         session.user.name = token.name;
         session.user.email = token.email;
       }
