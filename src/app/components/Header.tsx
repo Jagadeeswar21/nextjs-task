@@ -1,15 +1,43 @@
-"use client";
-import React, { useState } from "react";
+'use client';
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
+import { useSession, signOut ,signIn} from "next-auth/react";
 import toast from "react-hot-toast";
-import { signIn } from "next-auth/react";
 import { CgProfile } from "react-icons/cg";
+
+type ExtendedSessionUser = {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  profilePicture?: string | null;
+};
 
 const Header: React.FC = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const [dropdownOpen, setDropdownOpen] = useState(false); 
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProfilePicture = async () => {
+      if (session) {
+        try {
+          const response = await fetch('/api/profile');
+          if (!response.ok) {
+            throw new Error('Failed to fetch user data');
+          }
+          const user = await response.json() as ExtendedSessionUser;
+          setProfilePicture(user.profilePicture || null);
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+          toast.error('Failed to fetch user data.', {
+            position: 'bottom-right',
+          });
+        }
+      }
+    };
+    fetchProfilePicture();
+  }, [session]);
 
   const handleLogout = async () => {
     try {
@@ -39,9 +67,17 @@ const Header: React.FC = () => {
           <button
             onClick={toggleDropdown}
             className="flex items-center gap-3 text-white px-3 py-2 rounded focus:outline-none"
-          ><CgProfile />
+          >
+            {profilePicture ? (
+              <img
+                src={profilePicture}
+                alt="Profile"
+                className="h-8 w-8 rounded-full object-cover"
+              />
+            ) : (
+              <CgProfile className="h-8 w-8" />
+            )}
             <span className="flex gap-3 align-middle">{session.user.name}</span>
-            
           </button>
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg border border-gray-200 z-10">
