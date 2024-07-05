@@ -7,10 +7,9 @@ export async function GET(req: NextRequest) {
     await connectMongoDB();
     const { searchParams } = new URL(req.url as string, "http://localhost");
     const page = parseInt(searchParams.get('page') || '1', 10);
-    const limit = parseInt(searchParams.get('limit') || '5', 10);
-    const skip = (page - 1) * limit;
+    const limit = parseInt(searchParams.get('limit') || '1000', 10);
     const totalLeaves = await Leave.countDocuments();
-    const leaves = await Leave.find({}).skip(skip).limit(limit).exec();
+    const leaves = await Leave.find({}).exec();
     const totalPages = Math.ceil(totalLeaves / limit);
     return NextResponse.json({
       leaves,

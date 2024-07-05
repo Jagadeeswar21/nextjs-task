@@ -1,11 +1,12 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import { HiPencilAlt } from 'react-icons/hi';
+import { HiPencilAlt, HiSearch } from 'react-icons/hi';
 import ContactForm from './contactForm';
 import RemoveContact from './removeContact';
 import Pagination from './pagination';
 import toast from 'react-hot-toast';
 import { useSession } from 'next-auth/react';
+
 interface Contact {
   _id?: string;
   name: string;
@@ -21,6 +22,8 @@ const ContactsPage: React.FC = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
   const contactsPerPage = 5;
 
   useEffect(() => {
@@ -56,26 +59,52 @@ const ContactsPage: React.FC = () => {
     });
     setShowForm(false);
   };
+
   const handleDelete = (id: string) => {
     setContacts(contacts.filter(contact => contact._id !== id));
-  }
+  };
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   if (status === 'loading') {
     return <p>Loading...</p>
   }
+
   if (status === 'unauthenticated') {
     return <p>Please log in to view your contacts.</p>;
   }
 
   return (
-    <div className="p-4">
+    <div className="p-4 relative z-40">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Contacts</h1>
-        <button onClick={() => setShowForm(true)} className="bg-blue-500 text-white px-3 text-sm py-2 rounded">
-          Create New Contact
-        </button>
+        <h1 className="text-2xl font-semibold">Contacts</h1>
+        <div className="ml-auto relative z-40">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-40 ">
+            <HiSearch className="h-5 w-5 text-gray-400" />
+          </div>
+          <div className="flex items-center space-x-4 z-40">
+            <input
+              type="text"
+              placeholder="Search by name..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="p-1 pl-10 rounded-full text-2xl border border-gray-400 focus:outline-none focus:ring focus:border-blue-300 z-40"
+            />
+            <button onClick={() => setShowForm(true)} className="bg-blue-500 text-white px-3 text-sm py-2 rounded z-40">
+              Create New Contact
+            </button>
+          </div>
+        </div>
       </div>
       <table className="min-w-full border-collapse border border-gray-400 leading-normal">
         <thead>
@@ -88,13 +117,13 @@ const ContactsPage: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {contacts.map(contact => (
+          {filteredContacts.map(contact => (
             <tr key={contact._id}>
               <td className="border border-gray-400 p-1">{contact.name}</td>
               <td className="border border-gray-400 p-1">{contact.email}</td>
               <td className="border border-gray-400 p-1">{contact.phone}</td>
               <td className="border border-gray-400 p-1">{contact.status}</td>
-              <td className="border border-gray-400 p-1 flex space-x-2">
+              <td className="border border-gray-400 p-1 space-x-2">
                 <button onClick={() => handleEdit(contact)} className="text-blue-500 hover:text-blue-700 p-2">
                   <HiPencilAlt />
                 </button>

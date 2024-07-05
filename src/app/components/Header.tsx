@@ -60,10 +60,10 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-blue-600 text-white fixed top-0 w-full h-[64px] flex items-center justify-between p-3">
+    <header className="bg-blue-600 text-white fixed top-0 w-full h-[64px] flex items-center justify-between p-3 z-50">
       <h1 className="text-2xl">Dashboard</h1>
       {session ? (
-        <div className="relative">
+        <div className="relative z-50">
           <button
             onClick={toggleDropdown}
             className="flex items-center gap-3 text-white px-3 py-2 rounded focus:outline-none"
@@ -80,7 +80,7 @@ const Header: React.FC = () => {
             <span className="flex gap-3 align-middle">{session.user.name}</span>
           </button>
           {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg border border-gray-200 z-10">
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg border border-gray-200 z-50">
               <div className="py-1">
                 <button
                   onClick={() => {

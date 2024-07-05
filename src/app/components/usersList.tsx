@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import RemoveBtn from './removeBtn';
 import EditBtn from './editBtn';
-
+import { HiSearch } from "react-icons/hi";
 export interface User {
   _id: string;
   name: string;
@@ -33,6 +33,7 @@ const getUsers = async () => {
 
 const UserList = ({ role }: UserListProps) => {
   const [users, setUsers] = useState<User[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -43,8 +44,27 @@ const UserList = ({ role }: UserListProps) => {
     fetchUsers();
   }, []);
 
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="p-4">
+       <div className="flex items-center mb-4">
+        <h2 className="text-xl font-semibold">Users List</h2>
+        <div className="ml-auto relative ">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ">
+            <HiSearch className="h-5 w-5 text-gray-400" />
+          </div>
+            <input
+              type="text"
+              placeholder="Search by name"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="p-2 pl-10 pr-4 rounded-full border border-gray-400 focus:outline-none focus:ring focus:border-blue-300"
+            />
+          </div>
+        </div>
       <table className="min-w-full border-collapse border border-gray-400 leading-normal">
         <thead>
           <tr>
@@ -55,12 +75,12 @@ const UserList = ({ role }: UserListProps) => {
           </tr>
         </thead>
         <tbody>
-          {users?.map((user: User) => (
+          {filteredUsers.map((user: User) => (
             <tr key={user._id}>
               <td className="border border-gray-400 p-1">{user.name}</td>
               <td className="border border-gray-400 p-1">{user.email}</td>
               <td className="border border-gray-400 p-1">{user.status}</td>
-              <td className="border border-gray-400 p-1 flex justify-center items-center">
+              <td className="border border-gray-400 items-center px-20">
                 <div className="flex gap-2">
                   {role === "admin" && <RemoveBtn id={user._id} />}
                   {(role === "admin" || role === "manager") && <EditBtn id={user._id} currentStatus={user.status} />}
