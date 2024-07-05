@@ -12,15 +12,14 @@ export async function GET(req:NextRequest){
     await connectMongoDB()
     const {searchParams}=new URL (req.url as string,"http://localhost")
     const page = parseInt(searchParams.get('page') || '1', 10);
-    const limit = parseInt(searchParams.get('limit') || '5', 10);
-    const skip = (page - 1) * limit;
+    const limit = parseInt(searchParams.get('limit') || '1000', 10);
     try {
       const currentUser = await getCurrentUser(req);
     if (!currentUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
         const totalContacts = await Contact.countDocuments({createdBy:currentUser.sub});
-        const contacts = await Contact.find({createdBy:currentUser.sub}).skip(skip).limit(limit).exec();
+        const contacts = await Contact.find({createdBy:currentUser.sub}).exec();
         
         const totalPages = Math.ceil(totalContacts / limit);
     

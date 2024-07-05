@@ -16,8 +16,9 @@ interface Contact {
 }
 
 const ContactsPage: React.FC = () => {
-  const { data: session, status } = useSession()
+  const { data: session, status } = useSession();
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [allContacts, setAllContacts] = useState<Contact[]>([]);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -28,20 +29,29 @@ const ContactsPage: React.FC = () => {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      const fetchContacts = async (page: number) => {
+      const fetchContacts = async () => {
         try {
-          const res = await fetch(`/api/contacts?page=${page}&limit=${contactsPerPage}`);
+          const res = await fetch('/api/contacts');
           const data = await res.json();
-          setContacts(data.contacts || []);
-          setTotalPages(data.totalPages || 1)
+          setAllContacts(data.contacts || []);
+          setContacts(data.contacts.slice(0, contactsPerPage));
+          setTotalPages(Math.ceil(data.contacts.length / contactsPerPage));
         } catch (error) {
           console.error('Failed to fetch contacts', error);
         }
       };
 
-      fetchContacts(currentPage);
+      fetchContacts();
     }
-  }, [currentPage, status]);
+  }, [status]);
+
+  useEffect(() => {
+    const filteredContacts = allContacts.filter(contact =>
+      contact.name?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setTotalPages(Math.ceil(filteredContacts.length / contactsPerPage));
+    setContacts(filteredContacts.slice((currentPage - 1) * contactsPerPage, currentPage * contactsPerPage));
+  }, [searchTerm, currentPage, allContacts]);
 
   const handleEdit = (contact: Contact) => {
     setEditingContact(contact);
@@ -50,9 +60,9 @@ const ContactsPage: React.FC = () => {
 
   const handleSave = (updatedContact: Contact) => {
     if (editingContact && editingContact._id) {
-      setContacts(contacts.map(contact => (contact._id === updatedContact._id ? updatedContact : contact)));
+      setAllContacts(allContacts.map(contact => (contact._id === updatedContact._id ? updatedContact : contact)));
     } else {
-      setContacts([...contacts, updatedContact]);
+      setAllContacts([...allContacts, updatedContact]);
     }
     toast.success("Successfully created!", {
       position: "bottom-right"
@@ -61,7 +71,7 @@ const ContactsPage: React.FC = () => {
   };
 
   const handleDelete = (id: string) => {
-    setContacts(contacts.filter(contact => contact._id !== id));
+    setAllContacts(allContacts.filter(contact => contact._id !== id));
   };
 
   const handlePageChange = (page: number) => {
@@ -71,10 +81,6 @@ const ContactsPage: React.FC = () => {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
-
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   if (status === 'loading') {
     return <p>Loading...</p>
@@ -117,7 +123,7 @@ const ContactsPage: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredContacts.map(contact => (
+          {contacts.map(contact => (
             <tr key={contact._id}>
               <td className="border border-gray-400 p-1">{contact.name}</td>
               <td className="border border-gray-400 p-1">{contact.email}</td>
