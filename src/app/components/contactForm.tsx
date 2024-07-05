@@ -74,7 +74,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ contact, onClose, onSave }) =
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg">
         <h2 className="text-xl font-bold mb-4">{contact ? 'Edit Contact' : 'Create New Contact'}</h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">

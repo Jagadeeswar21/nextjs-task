@@ -141,6 +141,7 @@ const ContactsPage: React.FC = () => {
       />
 
       {showForm && (
+        <div className="fixed inset-0 z-50">
         <ContactForm
           contact={editingContact}
           onClose={() => {
@@ -149,6 +150,7 @@ const ContactsPage: React.FC = () => {
           }}
           onSave={handleSave}
         />
+        </div>
       )}
     </div>
   );

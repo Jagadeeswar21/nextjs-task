@@ -14,7 +14,11 @@ type ExtendedSessionUser = {
   profilePicture?: string | null;
 };
 
-const Profile: React.FC = () => {
+type ProfileProps = {
+  onClose: () => void; 
+};
+
+const Profile: React.FC<ProfileProps> = ({ onClose }) => {
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -82,6 +86,7 @@ const Profile: React.FC = () => {
       toast.success('Profile updated successfully!', {
         position: 'bottom-right',
       });
+      onClose()
     } catch (error) {
       console.error('Failed to update profile', error);
       toast.error('Failed to update profile.', {
@@ -193,12 +198,20 @@ const Profile: React.FC = () => {
           <option value="female">Female</option>
           <option value="other">Other</option>
         </select>
+      </div>
+      <div className="flex justify-end gap-4">
         <button
           onClick={handleSave}
-          className={`bg-blue-600 text-white mt-3 px-4 py-2 rounded ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className={`bg-blue-600 text-white px-4 py-2 rounded ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
           disabled={loading}
         >
           {loading ? 'Saving...' : 'Save'}
+        </button>
+        <button
+          onClick={onClose} 
+          className="bg-gray-500 text-white px-4 py-2 rounded"
+        >
+          Cancel
         </button>
       </div>
     </div>
