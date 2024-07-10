@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
@@ -15,16 +15,17 @@ export default function ForgetPassword() {
   const router = useRouter();
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    try{
-    const res = await fetch("/api/forget-password", {
+    try {
+      const res = await fetch("/api/forget-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            email
+          email,
         }),
       });
+      console.log(res);
 
       if (res.ok) {
         router.push("/");
@@ -33,9 +34,9 @@ export default function ForgetPassword() {
       }
     } catch (error: any) {
       setError("Error during registration: " + error.message);
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
   return (
     <div className="grid place-items-center h-screen">
       <div className="shadow-lg p-6 rounded-lg border-t-4 bg-orange-200">
@@ -47,7 +48,9 @@ export default function ForgetPassword() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <button className="bg-orange-400 rounded-lg text-white font-bold px-6 py-2">submit</button>
+          <button className="bg-orange-400 rounded-lg text-white font-bold px-6 py-2">
+            submit
+          </button>
           {error && (
             <div className="text-red-500 w-fit text-sm py-1 px-3 rounded-md mt-2">
               {error}
@@ -59,5 +62,6 @@ export default function ForgetPassword() {
         </Link>
       </div>
     </div>
-  );` `
+  );
+  ` `;
 }

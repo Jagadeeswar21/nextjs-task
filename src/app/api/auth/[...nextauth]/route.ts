@@ -55,14 +55,14 @@ const authOptions = {
     })
   ],
   callbacks: {
-    async signIn({ account, profile }:any) {
-      if ((account.provider === 'google' || account.provider === 'github') && profile?.email) {
+    async signIn({user, account, profile }:any) {
+      if ((account?.provider === 'google' || account?.provider === 'github') ) {
         try {
           await connectMongoDB();
-          let user = await User.findOne({ email: profile.email });
-          if (!user) {
+          let dbUser = await User.findOne({ email: profile.email });
+          if (!dbUser) {
             console.log("Creating new user", profile.email);
-            user = await User.create({
+            dbUser = await User.create({
               name: profile.name || 'user',
               email: profile.email,
               password: null,
@@ -70,13 +70,14 @@ const authOptions = {
               roles: ['user'],
               isDeleted: false,
               provider:account.provider,
+              providerId: profile.sub || profile.id,
             });
           }
           else {
-            user.email = profile.email;
-            await user.save();
+            dbUser.providerId = profile.sub || profile.id;
+            await dbUser.save();
           }
-          return true;
+          user._id = dbUser._id;
         } catch (error) {
           console.error(`Error during ${account.provider} Sign-In:`, error);
           return false;
@@ -84,9 +85,9 @@ const authOptions = {
       }
       return true;
     },
-    async jwt({ token, user }: any) {
+    async jwt({ token, user, account }: any) {
       if (user) {
-        token.sub = user._id;
+        token.sub = user._id?  user._id.toString() :user.id;
         token.roles = user.roles;
         token.name = user.name;
         token.email = user.email;
