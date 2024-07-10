@@ -12,6 +12,7 @@ export async function POST(req: Request) {
   if (!existingUser) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
+  
   const hashedPassword = await bcrypt.hash(password, 10);
   existingUser.password = hashedPassword;
   existingUser.resetToken = undefined;
