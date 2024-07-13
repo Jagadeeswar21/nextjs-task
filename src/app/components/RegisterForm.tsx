@@ -54,7 +54,6 @@ const RegisterForm: React.FC = () => {
           },
           body: JSON.stringify(values),
         });
-
         if (res.ok) {
           resetForm();
           toast.success("Registration successful!",{
@@ -72,9 +71,9 @@ const RegisterForm: React.FC = () => {
   });
 
   return (
-    <div className="grid place-items-center h-screen">
-      <div className="shadow-lg p-6 rounded-lg border-t-4 bg-orange-200">
-        <h1 className="text-xl font-bold my-4">Registration Page</h1>
+    <div className="grid place-items-center h-screen bg-white">
+      <div className="shadow-lg p-6 rounded-lg border-t-4 bg-white">
+        <h1 className="text-xl font-bold text-centre text-black my-4">Registration Page</h1>
         <form onSubmit={formik.handleSubmit} className="flex flex-col gap-3">
           <input
             type="text"
@@ -83,7 +82,8 @@ const RegisterForm: React.FC = () => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.name}
-            className={formik.touched.name && formik.errors.name ? "border-red-500" : ""}
+            
+            className={formik.touched.name && formik.errors.name ? "border-red-500" : "placeholder-gray text-gray border border-gray  focus:outline-none focus:ring focus:border-blue-300 border-gray-300 rounded-md shadow-sm py-2 px-4 block w-full sm:text-sm"}
           />
           {formik.touched.name && formik.errors.name && (
             <div className="text-red-500 text-sm">{formik.errors.name}</div>
@@ -95,7 +95,7 @@ const RegisterForm: React.FC = () => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.email}
-            className={formik.touched.email && formik.errors.email ? "border-red-500" : ""}
+            className={formik.touched.email && formik.errors.email ? "border-red-500" : "placeholder-gray text-gray border border-gray  focus:outline-none focus:ring focus:border-blue-300 border-gray-300 rounded-md shadow-sm py-2 px-4 block w-full sm:text-sm"}
           />
           {formik.touched.email && formik.errors.email && (
             <div className="text-red-500 text-sm">{formik.errors.email}</div>
@@ -107,7 +107,7 @@ const RegisterForm: React.FC = () => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.password}
-            className={formik.touched.password && formik.errors.password ? "border-red-500" : ""}
+            className={formik.touched.password && formik.errors.password ? "border-red-500" : "placeholder-gray text-gray border border-gray  focus:outline-none focus:ring focus:border-blue-300 border-gray-300 rounded-md shadow-sm py-2 px-4 block w-full sm:text-sm"}
           />
           <div>
           <div>
@@ -118,11 +118,14 @@ const RegisterForm: React.FC = () => {
           value={formik.values.role}
           onChange={formik.handleChange}
           required
+          className="placeholder-gray text-gray border border-gray focus:outline-none focus:ring focus:border-blue-300 border-gray-300 rounded-md "
+          
         >
           <option value="" disabled>Select role</option>
           <option value="user">User</option>
           <option value="admin">Admin</option>
           <option value="manager">Manager</option>
+          
         </select>
         {formik.touched.role && formik.errors.role ? (
           <div className="text-red-500 text-sm">{formik.errors.role}</div>
@@ -132,7 +135,7 @@ const RegisterForm: React.FC = () => {
           {formik.touched.password && formik.errors.password && (
             <div className="text-red-500 text-sm">{formik.errors.password}</div>
           )}
-          <button type="submit" className="bg-orange-400 text-white cursor-pointer font-bold px-6 py-2">
+          <button type="submit" className="bg-blue-500 hover:bg-blue-400 rounded-lg text-white cursor-pointer font-bold px-6 py-2">
             Register
           </button>
           {error && (

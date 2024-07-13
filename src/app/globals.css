@@ -9,3 +9,6 @@ input,select{
   body{
     overflow: hidden;
   }
+/* input::placeholder{
+  color: #fff !important;
+} */

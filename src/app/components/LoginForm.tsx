@@ -83,23 +83,26 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="grid place-items-center h-screen">
-      <div className="shadow-lg p-6 rounded-lg border-t-4 bg-orange-200">
-        <h1 className="text-xl font-bold my-4">Login Page</h1>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+    <div className="grid place-items-center h-screen bg-gray-200">
+      <div className="shadow-lg p-6 rounded-lg border bg-white w-[420px]">
+        <h1 className="text-xl font-bold text-center text-black my-4">Login Page</h1>
+        <form onSubmit={handleSubmit} className="flex text-white flex-col gap-3">
           <input
             type="text"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            className="placeholder-gray text-gray border border-gray  focus:outline-none focus:ring focus:border-blue-300 border-gray-300 rounded-md shadow-sm py-2 px-4 block w-full sm:text-sm"
           />
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            className="placeholder-gray text-gray border border-gray  focus:outline-none focus:ring focus:border-blue-300 border-gray-300 rounded-md shadow-sm py-2 px-4 block w-full sm:text-sm"
+
           />
-          <button className="bg-orange-400 rounded-lg text-white font-bold px-6 py-2">Login</button>
+          <button className="bg-blue-500 hover:bg-blue-400 rounded-lg text-white font-bold px-6 py-2 mt-3">Login</button>
           {error && (
             <div className="text-red-500 w-fit text-sm py-1 px-3 rounded-md mt-2">
               {error}
@@ -107,9 +110,9 @@ export default function LoginForm() {
           )}
         </form>
         <div className="flex justify-between w-full mt-3">
-        <Link className="text-sm mt-3 underline" href="/forget-password">Forgot Password?</Link>
-        <Link className="text-sm mt-3 text-right flex justify-end" href="/Register">
-          or Don t have an account? <span className="underline">Register</span>
+        <Link className="text-sm mt-3 text-black underline" href="/forget-password">Forgot Password?</Link>
+        <Link className="text-sm mt-3 text-black text-right flex justify-end" href="/Register">
+           <span className="underline">Register</span>
         </Link>
         </div>
         <div className="flex items-center justify-center my-2">
@@ -119,7 +122,7 @@ export default function LoginForm() {
         </div>
         <button
           onClick={handleGoogleSignIn}
-          className="bg-orange-400 rounded-lg text-white font-bold px-4 py-2 mt-3 flex w-full justify-center items-center"
+          className="bg-blue-500 hover:bg-blue-400 rounded-lg text-white font-bold px-4 py-2 mt-3 flex w-full justify-center items-center"
         >
           Sign in with Google
         </button>
@@ -131,7 +134,7 @@ export default function LoginForm() {
         
         <button
           onClick={handleGitHubSignIn}
-          className="bg-orange-400 rounded-lg text-white font-bold px-4 py-2 mt-3 flex w-full justify-center items-center "
+          className="bg-blue-500 rounded-lg hover:bg-blue-400 text-white font-bold px-4 py-2 mt-3 flex w-full justify-center items-center "
         >
           Sign in with GitHub
         </button>

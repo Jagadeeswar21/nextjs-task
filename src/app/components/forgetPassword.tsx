@@ -36,17 +36,18 @@ export default function ForgetPassword() {
     }
   };
   return (
-    <div className="grid place-items-center h-screen">
-      <div className="shadow-lg p-6 rounded-lg border-t-4 bg-orange-200">
-        <h1 className="text-xl font-bold my-4">Forget Password</h1>
+    <div className="grid place-items-center h-screen bg-white">
+      <div className="shadow-lg p-6 rounded-lg border-t-4 bg-white">
+        <h1 className="text-xl font-bold my-4 text-black">Forget Password</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input
             type="text"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            className="placeholder-gray text-gray border border-gray focus:outline-none focus:ring focus:border-blue-300 border-gray-300 rounded-md "
           />
-          <button className="bg-orange-400 rounded-lg text-white font-bold px-6 py-2">
+          <button className="bg-blue-500 hover:bg-blue-400 rounded-lg text-white font-bold px-6 py-2">
             submit
           </button>
           {error && (
