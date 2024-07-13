@@ -1,9 +1,7 @@
 "use client";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 
 export default function ForgetPassword() {
