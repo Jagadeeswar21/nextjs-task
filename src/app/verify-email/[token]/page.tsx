@@ -15,7 +15,6 @@ const VerifyEmail = () => {
         await verifyEmail(token);
       }
     };
-
     verifyEmailToken();
   }, []);
 

@@ -63,7 +63,7 @@ const Header: React.FC = () => {
     };
 
     fetchNotifications();
-  }, [session, showNotifications]); 
+  }, [session, showNotifications]);
 
   const handleLogout = async () => {
     try {
@@ -93,7 +93,7 @@ const Header: React.FC = () => {
   const toggleNotifications = () => {
     setShowNotifications((prev) => !prev);
     if (!showNotifications) {
-      setUnreadNotifications(0); 
+      setUnreadNotifications(0);
     }
   };
 
