@@ -9,7 +9,6 @@ export default function ForgetPassword() {
   const [error, setError] = useState("");
   const { data: session } = useSession();
   console.log(session);
-
   const router = useRouter();
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -23,8 +22,6 @@ export default function ForgetPassword() {
           email,
         }),
       });
-      console.log(res);
-
       if (res.ok) {
         router.push("/");
       } else {
@@ -36,7 +33,7 @@ export default function ForgetPassword() {
     }
   };
   return (
-    <div className="grid place-items-center h-screen bg-white">
+    <div className="grid place-items-center h-screen  bg-gray-200">
       <div className="shadow-lg p-6 rounded-lg border-t-4 bg-white">
         <h1 className="text-xl font-bold my-4 text-black">Forget Password</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">

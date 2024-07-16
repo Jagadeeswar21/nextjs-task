@@ -20,7 +20,6 @@ export async function POST(req: Request) {
     user.verificationToken = undefined;
     user.verificationTokenExpiry = undefined;
     await user.save();
-
     return NextResponse.json(
       { message: "Email verified successfully" },
       { status: 200 }
