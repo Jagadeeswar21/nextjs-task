@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 10);
     const verificationToken = crypto.randomBytes(32).toString("hex");
     const verificationTokenExpiry = new Date(Date.now() + 3600000);
-    const resdata = await User.create({
+    await User.create({
       name,
       email,
       password: hashedPassword,
@@ -22,7 +22,6 @@ export async function POST(req: Request) {
       verificationToken,
       verificationTokenExpiry,
     });
-
     const verificationUrl = `http://localhost:3000/verify-email/${verificationToken}`;
     const body = `
       <p>Hi ${name},</p>

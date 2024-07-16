@@ -4,7 +4,7 @@ interface ILeave extends Document {
   numberofleaves: number;
   numberofdays: number;
   dateRange: string;
-  status: "pending"|"approved"|"rejected";
+  status: "pending" | "approved" | "rejected";
   reason: string;
   modifiedAt: Date;
 }
@@ -12,7 +12,7 @@ const leaveSchema: Schema = new Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
     date: {
@@ -33,7 +33,7 @@ const leaveSchema: Schema = new Schema(
     },
     status: {
       type: String,
-      enum: ["pending","approved","rejected"],
+      enum: ["pending", "approved", "rejected"],
       default: "pending",
       required: true,
     },

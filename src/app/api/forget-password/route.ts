@@ -6,6 +6,7 @@ import sgMail from "@sendgrid/mail";
 export async function POST(req: Request) {
   await connectMongoDB();
   const { email } = await req.json();
+  console.log(email);
   const existingUser = await User.findOne({ email });
   if (!existingUser) {
     return NextResponse.json(
@@ -13,15 +14,14 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   }
+  console.log(existingUser);
   const resetToken = crypto.randomBytes(32).toString("hex");
   console.log();
   const passwordResetToken = crypto
     .createHash("sha256")
     .update(resetToken)
     .digest("hex");
-
   const resetTokenExpiry = Date.now() + 3600000;
-
   existingUser.resetToken = passwordResetToken;
   existingUser.resetTokenExpiry = resetTokenExpiry;
   const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;

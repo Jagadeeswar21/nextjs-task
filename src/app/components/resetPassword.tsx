@@ -24,7 +24,6 @@ export default function ResetPassword({ params }: any) {
             token: params.token,
           }),
         });
-
         if (res.ok) {
           const userData = await res.json();
           setUser(userData);
@@ -86,12 +85,12 @@ export default function ResetPassword({ params }: any) {
   }
 
   return (
-    <div className="grid place-items-center h-screen text-white">
+    <div className="grid place-items-center h-screen  bg-gray-200">
       <div className="shadow-lg p-6 rounded-lg border-t-4 bg-white">
         <h1 className="text-xl font-bold my-4 text-black">Reset Password</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <input type="password" placeholder="New Password" required />
-          <input type="password" placeholder="Confirm New Password" required />
+          <input type="password" placeholder="New Password" required className="placeholder-gray text-gray border border-gray focus:outline-none focus:ring focus:border-blue-300 border-gray-300 rounded-md "/>
+          <input type="password" placeholder="Confirm New Password" required className="placeholder-gray text-gray border border-gray focus:outline-none focus:ring focus:border-blue-300 border-gray-300 rounded-md " />
           <button className="bg-blue-500 hover:to-blue-400 rounded-lg text-white font-bold px-6 py-2">
             Reset Password
           </button>
