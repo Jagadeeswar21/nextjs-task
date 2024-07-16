@@ -46,6 +46,10 @@ const userSchema=new Schema(
             type: Boolean,
             default: false,
           },
+          isVerified: {
+            type: Boolean,
+            default: false,
+          },
           provider: {
             type: String,
             enum: ["credentials", "google", "github"],
@@ -56,14 +60,15 @@ const userSchema=new Schema(
             type: String,
             required: false,
           },
-          resetToken:{
+          verificationToken:{
             type: String,
             required: false
           },
-          resetTokenExpiry:{
+          verificationTokenExpiry:{
             type: Date,
             required: false
-          }
+          },
+
     },
 
     {timestamps:true}
