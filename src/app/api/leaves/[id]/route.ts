@@ -1,11 +1,18 @@
 import { connectMongoDB } from '../../../../../lib/mongodb';
 import Leave from '../../../../../models/leaveSchema';
 import { NextResponse } from 'next/server';
-
+import Notification from '../../../../../models/notificationSchema';
 type Params = {
   id: string;
 };
-
+async function sendNotification(userId: string, message: string, sendBy: string) {
+  try {
+    await Notification.create({ userId, message, read: false, sendBy });
+    console.log(`Notification sent to ${userId}: ${message}`);
+  } catch (error) {
+    console.error('Error sending notification:', error);
+  }
+}
 export async function GET(req: Request, { params }: { params: Params }) {
   const { id } = params;
   try {
@@ -30,6 +37,11 @@ export async function PUT(req: Request, { params }: { params: Params }) {
     if (!updatedLeave) {
       return NextResponse.json({ message: 'Leave not found' }, { status: 404 });
     }
+    await sendNotification(
+      updatedLeave.user.toString(),
+      `Your leave request has been ${status}`,
+      'user_leave_update'
+    );
     return NextResponse.json(updatedLeave, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: 'Failed to update leave' }, { status: 500 });

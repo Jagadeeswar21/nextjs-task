@@ -22,9 +22,9 @@ export default function LoginForm() {
 
       if (sessionData?.user?.roles.includes("admin")) {
         router.push("/adminDashboard");
-      } else if(sessionData?.user?.roles.includes("user")) {
+      } else if (sessionData?.user?.roles.includes("user")) {
         router.push("/dashboard");
-      }if(sessionData?.user?.roles.includes("manager")) {
+      } else if (sessionData?.user?.roles.includes("manager")) {
         router.push("/manager");
       }
     } catch (error) {
@@ -32,6 +32,7 @@ export default function LoginForm() {
       setError("An error occurred. Please try again.");
     }
   };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
@@ -63,6 +64,7 @@ export default function LoginForm() {
         setError("Failed to sign in with Google");
         return;
       }
+      //await checkUserRole();
     } catch (error) {
       setError("An error occurred. Please try again.");
     }
@@ -76,7 +78,7 @@ export default function LoginForm() {
         setError("Failed to sign in with GitHub");
         return;
       }
-     // await checkUserRole();
+      //await checkUserRole();
     } catch (error) {
       setError("An error occurred. Please try again.");
     }
@@ -86,21 +88,20 @@ export default function LoginForm() {
     <div className="grid place-items-center h-screen bg-gray-200">
       <div className="shadow-lg p-6 rounded-lg border bg-white w-[420px]">
         <h1 className="text-xl font-bold text-center text-black my-4">Login Page</h1>
-        <form onSubmit={handleSubmit} className="flex text-white flex-col gap-3">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input
             type="text"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="placeholder-gray text-gray border border-gray  focus:outline-none focus:ring focus:border-blue-300 border-gray-300 rounded-md shadow-sm py-2 px-4 block w-full sm:text-sm"
+            className="placeholder-gray-500 text-black border-gray-300 focus:outline-none focus:ring focus:border-blue-300 rounded-md shadow-sm py-2 px-4 block w-full sm:text-sm"
           />
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="placeholder-gray text-gray border border-gray  focus:outline-none focus:ring focus:border-blue-300 border-gray-300 rounded-md shadow-sm py-2 px-4 block w-full sm:text-sm"
-
+            className="placeholder-gray-500 text-black border-gray-300 focus:outline-none focus:ring focus:border-blue-300 rounded-md shadow-sm py-2 px-4 block w-full sm:text-sm"
           />
           <button className="bg-blue-500 hover:bg-blue-400 rounded-lg text-white font-bold px-6 py-2 mt-3">Login</button>
           {error && (
@@ -110,10 +111,10 @@ export default function LoginForm() {
           )}
         </form>
         <div className="flex justify-between w-full mt-3">
-        <Link className="text-sm mt-3 text-black underline" href="/forget-password">Forgot Password?</Link>
-        <Link className="text-sm mt-3 text-black text-right flex justify-end" href="/Register">
-           <span className="underline">Register</span>
-        </Link>
+          <Link className="text-sm mt-3 text-black underline" href="/forget-password">Forgot Password?</Link>
+          <Link className="text-sm mt-3 text-black text-right flex justify-end" href="/Register">
+            <span className="underline">Register</span>
+          </Link>
         </div>
         <div className="flex items-center justify-center my-2">
           <div className="border-t border-gray-400 flex-grow"></div>
@@ -131,14 +132,13 @@ export default function LoginForm() {
           <span className="mx-2 text-gray-500">or</span>
           <div className="border-t border-gray-400 flex-grow"></div>
         </div>
-        
         <button
           onClick={handleGitHubSignIn}
-          className="bg-blue-500 rounded-lg hover:bg-blue-400 text-white font-bold px-4 py-2 mt-3 flex w-full justify-center items-center "
+          className="bg-blue-500 hover:bg-blue-400 rounded-lg text-white font-bold px-4 py-2 mt-3 flex w-full justify-center items-center"
         >
           Sign in with GitHub
         </button>
       </div>
     </div>
-  );` `
+  );
 }
