@@ -49,7 +49,6 @@ const leaveSchema: Schema = new Schema(
   { timestamps: true }
 );
 
-// Export the Leave model
 const Leave =
   mongoose.models.Leave || mongoose.model<ILeave>("Leave", leaveSchema);
 export default Leave;
