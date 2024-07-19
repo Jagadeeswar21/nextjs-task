@@ -25,7 +25,7 @@ export default function LeaveList({ role }: LeaveListProps) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [statusFilter, setStatusFilter] = useState<string>("");
-  const leavesPerPage = 2;
+  const leavesPerPage = 5;
 
   const getLeaves = async () => {
     try {
@@ -72,14 +72,14 @@ export default function LeaveList({ role }: LeaveListProps) {
     <>
       <div className="p-4">
         <div className="mb-4  flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Leave List</h2>
+        <h2 className="text-xl font-bold">Leave List</h2>
         <div className="flex items-center">
           
           <select
             id="statusFilter"
             value={statusFilter}
             onChange={handleStatusFilterChange}
-            className="p-2 border border-gray-400 rounded"
+            className="p-2 border border-[#eaedf1] rounded bg-white "
           >
             <option value="">All</option>
             <option value="approved">Approved</option>
@@ -88,16 +88,18 @@ export default function LeaveList({ role }: LeaveListProps) {
           </select>
         </div>
         </div>
-        <table className="min-w-full border-collapse border border-gray-400 leading-normal">
+        <div className="bg-white p-[15px] rounded shadow-lg">
+        <table className="min-w-full border-collapse border border-[#eaedf1]
+         leading-normal">
           <thead>
             <tr>
-              <th className="border w-[8%] border-gray-400 p-1">Date</th>
-              <th className="border w-[8%] border-gray-400 p-1">Number of Days</th>
-              <th className="border w-[16%] border-gray-400 p-1">Date Range</th>
-              <th className="border w-[8%] border-gray-400 p-1">Status</th>
-              <th className="border w-[20%] border-gray-400 p-1">Reason</th>
+              <th className="border w-[8%] border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]">Date</th>
+              <th className="border w-[8%] border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]">Number of Days</th>
+              <th className="border w-[16%] border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]">Date Range</th>
+              <th className="border w-[8%] border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]" >Status</th>
+              <th className="border w-[20%] border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]">Reason</th>
               {(role === "admin" || role === "manager") && (
-                <th className="border w-[8%] border-gray-400 p-1">Actions</th>
+                <th className="border w-[8%] border-[#eaedf1] p-1 text-[0.875rem] font-medium">Actions</th>
               )}
             </tr>
           </thead>
@@ -105,13 +107,13 @@ export default function LeaveList({ role }: LeaveListProps) {
             {filteredLeaves.slice((currentPage-1)* leavesPerPage,currentPage*leavesPerPage)
               .map((leave: Leave) => (
               <tr key={leave._id}>
-                <td className="border border-gray-400 p-1">{new Date(leave.date).toLocaleDateString()}</td>
-                <td className="border border-gray-400 p-1">{leave.numberofdays}</td>
-                <td className="border border-gray-400 p-1">{leave.dateRange}</td>
-                <td className="border border-gray-400 p-1">{leave.status}</td>
-                <td className="border border-gray-400 p-1">{leave.reason}</td>
+                <td className="border border-[#eaedf1] p-1">{new Date(leave.date).toLocaleDateString()}</td>
+                <td className="border border-[#eaedf1] p-1">{leave.numberofdays}</td>
+                <td className="border border-[#eaedf1] p-1">{leave.dateRange}</td>
+                <td className="border border-[#eaedf1] p-1">{leave.status}</td>
+                <td className="border border-[#eaedf1] p-1">{leave.reason}</td>
                 {(role === "admin" || role === "manager") && (
-                  <td className="border border-gray-400 px-20">
+                  <td className="border border-[#eaedf1] px-20">
                     <div className="flex gap-2">
                       {role === "admin" && <RemoveLeave id={leave._id} />}
                       <EditLeaveBtn id={leave._id} currentStatus={leave.status} />
@@ -122,6 +124,8 @@ export default function LeaveList({ role }: LeaveListProps) {
             ))}
           </tbody>
         </table>
+        </div>
+     
 
         <Pagination
           currentPage={currentPage}

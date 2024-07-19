@@ -1,19 +1,21 @@
-import React from 'react'
-import Link from 'next/link'
+import React from 'react';
+import Link from 'next/link';
+import { FaUser, FaClipboardList } from 'react-icons/fa';
 
 const Adminsidebar: React.FC = () => {
   return (
-    <aside className="w-[10rem] fixed left-0 h-[calc(100vh-128px)] mt-[64px] bg-gray-700 text-white flex-shrink-0">
-      <nav className="flex flex-col p-4">
-        <Link href="/adminDashboard/users"
-           className="py-2 px-4 hover:bg-gray-700 rounded">Users
+    <aside className="w-[15rem] fixed left-0 h-[calc(100vh)] mt-[64px] bg-white border-r-2 shadow-lg border-gray-400 text-black flex-shrink-0">
+      <nav className="flex flex-col ">
+        <Link href="/adminDashboard/users" className="py-4 px-4 flex users-name items-center hover:bg-black hover:colour-white rounded text-xl font-bold">
+          <FaUser className="mr-2" /> Users
         </Link>
-        <Link href="/adminDashboard/leaves"
-           className="py-2 px-4 hover:bg-gray-700 rounded">Requests
+        <Link href="/adminDashboard/leaves" className="py-4 px-4  flex items-center users-name
+         hover:bg-black  rounded text-lg font-bold ">
+          <FaClipboardList className="mr-2" /> Requests
         </Link>
       </nav>
     </aside>
   );
 };
 
-export default Adminsidebar
+export default Adminsidebar;

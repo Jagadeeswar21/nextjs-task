@@ -12,3 +12,7 @@ input,select{
 /* input::placeholder{
   color: #fff !important;
 } */
+
+.users-name:hover {
+  color: #fff;
+}
