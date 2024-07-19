@@ -100,15 +100,17 @@ const Header: React.FC = () => {
 
   return (
     <>
-      <header className="bg-white text-white fixed top-0 w-full h-[64px] flex items-center justify-between p-3 z-50">
-      <Image src="/logo.png" alt="Logo" width={50} height={20} />
+      <header className="bg-white text-white border-b-2 shadow-lg fixed top-0 w-full h-[64px] flex items-center justify-between p-3 z-50">
+      <div className="px-10">
+      <Image src="/logo.png" alt="Logo" width={70} height={20} />
+      </div>
         {session ? (
           <div className="flex items-center gap-4 relative">
             <button
               onClick={toggleNotifications}
               className="relative text-white focus:outline-none"
             >
-              <IoNotificationsOutline className="h-6 w-6" />
+              <IoNotificationsOutline className="h-6 w-6 size-6 text-black" />
               {unreadNotifications > 0 && (
                 <span className="absolute -top-1 -right-1 h-2 w-2 bg-red-600 rounded-full"></span>
               )}
@@ -127,7 +129,7 @@ const Header: React.FC = () => {
                 ) : (
                   <CgProfile className="h-8 w-8" />
                 )}
-                <span className="flex gap-3 align-middle">{session.user.name}</span>
+                <span className="flex gap-3 align-middle text-black font-bold text-lg">{session.user.name}</span>
               </button>
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg border border-gray-200 z-50">

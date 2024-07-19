@@ -61,27 +61,28 @@ const UserList = ({ role }: UserListProps) => {
               placeholder="Search by name"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="p-2 pl-10 pr-4 rounded-full border border-gray-400 focus:outline-none focus:ring focus:border-blue-300"
+              className="p-2 pl-10 pr-4 rounded-full border border-gray-400 focus:outline-none focus:ring focus:border-blue-300 bg-white"
             />
           </div>
         </div>
-      <table className="min-w-full border-collapse border border-gray-400 leading-normal">
+      <div className="bg-white p-[15px] rounded shadow-lg">
+      <table className="min-w-full   border-collapse border border-gray-400 bg-white leading-normal">
         <thead>
           <tr>
-            <th className="border w-[25%] border-gray-400 p-1">Name</th>
-            <th className="border w-[35%] border-gray-400 p-1">Email</th>
-            <th className="border w-[20%] border-gray-400 p-1">Status</th>
-            <th className="border w-[20%] border-gray-400 p-1">Actions</th>
+            <th className="border w-[25%] border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]">Name</th>
+            <th className="border w-[35%] border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]">Email</th>
+            <th className="border w-[20%] border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]">Status</th>
+            <th className="border w-[20%] border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138] text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
           {filteredUsers.map((user: User) => (
             <tr key={user._id}>
-              <td className="border border-gray-400 p-1">{user.name}</td>
-              <td className="border border-gray-400 p-1">{user.email}</td>
-              <td className="border border-gray-400 p-1">{user.status}</td>
-              <td className="border border-gray-400 items-center px-20">
-                <div className="flex gap-2">
+              <td className="border border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]  px-5">{user.name}</td>
+              <td className="border border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]  px-10">{user.email}</td>
+              <td className="border border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]  px-20">{user.status}</td>
+              <td className="border border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]  px-20">
+                <div className="flex gap-2  px-20">
                   {role === "admin" && <RemoveBtn id={user._id} />}
                   {(role === "admin" || role === "manager") && <EditBtn id={user._id} currentStatus={user.status} />}
                 </div>
@@ -90,6 +91,7 @@ const UserList = ({ role }: UserListProps) => {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };

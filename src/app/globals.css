@@ -47,4 +47,7 @@ input,select{
   border-radius: 3px;
   padding: 2px 5px;
   font-size: 0.8em;
+
+.users-name:hover {
+  color: #fff;
 }
