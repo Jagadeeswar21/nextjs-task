@@ -4,10 +4,11 @@ import { useRouter } from "next/navigation";
 import { useSession, signOut, signIn } from "next-auth/react";
 import toast from "react-hot-toast";
 import { CgProfile } from "react-icons/cg";
-import { IoNotificationsOutline } from "react-icons/io5";
+import { IoNotificationsOutline, IoLogOutOutline } from "react-icons/io5";
 import Profile from "./profilepage";
 import Notifications from "./notifications";
-
+import { AiOutlineUser } from "react-icons/ai";
+import Image from "next/image";
 type ExtendedSessionUser = {
   id: string;
   name?: string | null;
@@ -63,7 +64,7 @@ const Header: React.FC = () => {
     };
 
     fetchNotifications();
-  }, [session, showNotifications]); 
+  }, [session, showNotifications]);
 
   const handleLogout = async () => {
     try {
@@ -93,14 +94,14 @@ const Header: React.FC = () => {
   const toggleNotifications = () => {
     setShowNotifications((prev) => !prev);
     if (!showNotifications) {
-      setUnreadNotifications(0); 
+      setUnreadNotifications(0);
     }
   };
 
   return (
     <>
-      <header className="bg-white text-black fixed border-b-2 shadow-lg top-0 w-full h-[64px] flex items-center justify-between p-3 z-50">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
+      <header className="bg-white text-white fixed top-0 w-full h-[64px] flex items-center justify-between p-3 z-50">
+      <Image src="/logo.png" alt="Logo" width={50} height={20} />
         {session ? (
           <div className="flex items-center gap-4 relative">
             <button
@@ -133,8 +134,9 @@ const Header: React.FC = () => {
                   <div className="py-1">
                     <button
                       onClick={toggleProfile}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
+                      className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white gap-2"
                     >
+                      <AiOutlineUser className="h-5 w-5" />
                       Profile
                     </button>
                     <button
@@ -142,9 +144,10 @@ const Header: React.FC = () => {
                         handleLogout();
                         closeDropdown();
                       }}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
+                      className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white gap-2"
                     >
-                      Logout
+                      
+                      <IoLogOutOutline className="h-5 w-5" /> <span>Logout</span>
                     </button>
                   </div>
                 </div>
