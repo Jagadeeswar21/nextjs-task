@@ -12,3 +12,39 @@ input,select{
 /* input::placeholder{
   color: #fff !important;
 } */
+.calendar-container {
+  height: 100vh;
+  width: 100vw;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.rbc-calendar {
+  height: 100% !important;
+}
+
+.rbc-month-view {
+  border: 1px solid #ddd;
+}
+
+.rbc-day-bg {
+  border-right: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+.rbc-month-row {
+  border-top: 1px solid #ddd;
+}
+
+.rbc-header {
+  border-bottom: 1px solid #ddd;
+  font-weight: bold;
+}
+
+.rbc-event {
+  background-color: #3174ad;
+  color: #fff;
+  border-radius: 3px;
+  padding: 2px 5px;
+  font-size: 0.8em;
+}
