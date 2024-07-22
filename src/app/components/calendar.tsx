@@ -19,6 +19,7 @@ type LeaveData = {
 
 const LeaveCalendar: React.FC = () => {
   const { data: session } = useSession();
+  const [leaveData, setLeaveData] = useState<LeaveData[]>([]);
   const [events, setEvents] = useState<any[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<View>(Views.MONTH);
@@ -69,13 +70,57 @@ const LeaveCalendar: React.FC = () => {
   const formattedMonthYear = moment(currentDate).format('MMMM YYYY');
 
   return (
-    <div className="calendar-container">
+    <div className="calendar-container bg-white">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center">
+          <button
+            className="bg-[#ececec] text-black font-bold p-2 mx-1 rounded"
+            onClick={() => handleMonthChange('prev')}
+          >
+            <FaChevronLeft />
+          </button>
+          <span className="mx-4 flex items-center gap-2 text-[17px] font-semibold">
+            <FaCalendarAlt /> {formattedMonthYear}
+          </span>
+          <button
+            className="bg-[#ececec] text-black font-bold p-2 mx-1 rounded"
+            onClick={() => handleMonthChange('next')}
+          >
+            <FaChevronRight />
+          </button>
+        </div>
+        <div className="flex items-center">
+          <button
+            className={`${view === Views.DAY ? "bg-[#292929] text-white" : "bg-[#ececec] text-black"} px-4 py-1 mx-1 rounded`}
+            onClick={() => setView(Views.DAY)}
+          >
+            Today
+          </button>
+          <button
+            className={`${view === Views.WEEK ? "bg-[#292929] text-white" : "bg-[#ececec] text-black"} px-4 py-1 mx-1 rounded`}
+            onClick={() => setView(Views.WEEK)}
+          >
+            Week
+          </button>
+          <button
+            className={`${view === Views.MONTH ? "bg-[#292929] text-white" : "bg-[#ececec] text-black"} px-4 py-1 mx-1 rounded`}
+            onClick={() => setView(Views.MONTH)}
+          >
+            Month
+          </button>
+        </div>
+      </div>
       <Calendar
         localizer={localizer}
         events={events}
         startAccessor="start"
         endAccessor="end"
         style={{ height: '100%', width: '100%' }}
+        date={currentDate}
+        onNavigate={(date) => setCurrentDate(date)}
+        toolbar={false}
+        view={view}
+        onView={(newView) => setView(newView)}
       />
     </div>
   );
