@@ -113,7 +113,7 @@ const Profile: React.FC<ProfileProps> = ({ onClose }) => {
   }
 
   return (
-    <div className="max-w-md mx-auto mt-10 overflow-y-auto max-h-screen">
+    <div className="max-w-md mx-auto overflow-y-auto max-h-screen w-2/3">
       <h2 className="text-2xl mb-6">Profile</h2>
       <div className="flex items-center mb-6">
         <div className="h-16 w-16 rounded-full overflow-hidden bg-gray-200">

@@ -43,7 +43,7 @@ const EditLeaveBtn: React.FC<EditLeaveBtnProps> = ({ id, currentStatus }) => {
         <HiPencilAlt size={24} className="text-blue-500 hover:text-blue-700" />
       </button>
       {isOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl mb-4">Edit Leave Status</h2>
             <div className="flex flex-col space-y-2">

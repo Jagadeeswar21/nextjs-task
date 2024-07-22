@@ -79,7 +79,7 @@ export default function LeaveList({ role }: LeaveListProps) {
             id="statusFilter"
             value={statusFilter}
             onChange={handleStatusFilterChange}
-            className="p-2 border border-[#eaedf1] rounded bg-white "
+            className="p-2 border border-[#eaedf1] rounded bg-white w-fit"
           >
             <option value="">All</option>
             <option value="approved">Approved</option>

@@ -101,7 +101,7 @@ const Header: React.FC = () => {
   return (
     <>
       <header className="bg-white text-white border-b-2 shadow-lg fixed top-0 w-full h-[64px] flex items-center justify-between p-3 z-50">
-      <div className="px-10">
+      <div className="px-5">
       <Image src="/logo.png" alt="Logo" width={70} height={20} />
       </div>
         {session ? (
@@ -167,7 +167,7 @@ const Header: React.FC = () => {
       </header>
       {showProfile && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-4 rounded-lg shadow-lg w-11/12 md:w-1/2 relative">
+          <div className="bg-white p-4 rounded-lg shadow-lg w-11/12 md:w-2/6 relative">
             <button
               onClick={toggleProfile}
               className="absolute top-4 right-4 text-gray-600 hover:text-gray-900"
