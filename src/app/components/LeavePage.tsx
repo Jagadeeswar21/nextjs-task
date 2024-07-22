@@ -117,7 +117,6 @@ const LeavesPage: React.FC = () => {
         <thead>
           <tr>
             <th className="border w-[8%] border-gray-400 p-1">Date</th>
-            <th className="border w-[8%] border-gray-400 p-1">Number of Leaves</th>
             <th className="border w-[8%] border-gray-400 p-1">Number of Days</th>
             <th className="border w-[16%] border-gray-400 p-1">Date Range</th>
             <th className="border w-[8%] border-gray-400 p-1">Status</th>
@@ -129,7 +128,6 @@ const LeavesPage: React.FC = () => {
           {leaves.map(leave => (
             <tr key={leave._id}>
               <td className="border border-gray-400 p-1">{new Date(leave.date).toLocaleDateString()}</td>
-              <td className="border border-gray-400 p-1">{leave.numberofleaves}</td>
               <td className="border border-gray-400 p-1">{leave.numberofdays}</td>
               <td className="border border-gray-400 p-1">{leave.dateRange}</td>
               <td className="border border-gray-400 p-1">{leave.status}</td>

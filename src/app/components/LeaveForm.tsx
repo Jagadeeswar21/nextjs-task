@@ -19,12 +19,13 @@ interface Leave {
   reason: string;
   user?: string
 }
+const currentDate = new Date().toISOString().split('T')[0];
 
 const LeaveForm: React.FC<LeaveFormProps> = ({ leave, onClose, onSave }) => {
   const { data: session } = useSession();
   const [formData, setFormData] = useState<Leave>({
     _id: leave?._id || '',
-    date: leave?.date || '',
+    date: leave?.date ||  currentDate ,
     numberofleaves: leave?.numberofleaves || 0,
     numberofdays: leave?.numberofdays || 0,
     dateRange: leave?.dateRange || '',
@@ -84,17 +85,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ leave, onClose, onSave }) => {
               required
             />
           </div>
-          <div className="mb-2">
-            <label>Number of Leaves</label>
-            <input
-              type="number"
-              name="numberofleaves"
-              value={formData.numberofleaves}
-              onChange={handleChange}
-              className="border rounded p-1 w-full"
-              required
-            />
-          </div>
+          
           <div className="mb-2">
             <label>Number of Days</label>
             <input
