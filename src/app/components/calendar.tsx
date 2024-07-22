@@ -1,10 +1,11 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
+import { Calendar, momentLocalizer, Views, View } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
+import { FaChevronLeft, FaChevronRight, FaCalendarAlt } from "react-icons/fa";
 
 const localizer = momentLocalizer(moment);
 
@@ -19,6 +20,8 @@ type LeaveData = {
 const LeaveCalendar: React.FC = () => {
   const { data: session } = useSession();
   const [events, setEvents] = useState<any[]>([]);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [view, setView] = useState<View>(Views.MONTH);
 
   useEffect(() => {
     const fetchLeaveData = async () => {
@@ -58,16 +61,21 @@ const LeaveCalendar: React.FC = () => {
     fetchLeaveData();
   }, [session]);
 
+  const handleMonthChange = (direction: 'prev' | 'next') => {
+    const newDate = moment(currentDate).add(direction === 'prev' ? -1 : 1, 'month').toDate();
+    setCurrentDate(newDate);
+  };
+
+  const formattedMonthYear = moment(currentDate).format('MMMM YYYY');
+
   return (
-    <div className="calendar-container p-10">
+    <div className="calendar-container">
       <Calendar
         localizer={localizer}
         events={events}
         startAccessor="start"
         endAccessor="end"
         style={{ height: '100%', width: '100%' }}
-        views={['month']}
-        popup
       />
     </div>
   );
