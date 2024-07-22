@@ -101,8 +101,8 @@ const Header: React.FC = () => {
   return (
     <>
       <header className="bg-white text-white border-b-2 shadow-lg fixed top-0 w-full h-[64px] flex items-center justify-between p-3 z-50">
-      <div className="px-5">
-      <Image src="/logo.png" alt="Logo" width={70} height={20} />
+      <div className="px-3">
+      <Image src="/logo.png" alt="Logo" width={50} height={20} />
       </div>
         {session ? (
           <div className="flex items-center gap-4 relative">

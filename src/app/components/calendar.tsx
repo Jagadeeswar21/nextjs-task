@@ -121,6 +121,7 @@ const LeaveCalendar: React.FC = () => {
         toolbar={false}
         view={view}
         onView={(newView) => setView(newView)}
+        popup
       />
     </div>
   );

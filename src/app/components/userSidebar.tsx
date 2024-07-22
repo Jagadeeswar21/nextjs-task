@@ -1,18 +1,23 @@
 import React from 'react';
 import Link from 'next/link';
-
+import { FaHome,FaClipboardList } from 'react-icons/fa';
+import { RiContactsBook3Fill } from "react-icons/ri";
 const Sidebar: React.FC = () => {
   return (
-    <aside className="w-[10rem] fixed left-0 h-[calc(100vh-128px)] mt-[64px] bg-gray-700 text-white flex-shrink-0">
-      <nav className="flex flex-col p-4">
-        <Link href="/dashboard/homePage"
-           className="py-2 px-4 hover:bg-gray-700 rounded">Home
+    <aside  className="w-[6rem] fixed left-0 h-[calc(100vh)] mt-[64px] bg-white border-r-2 shadow-xl text-black flex-shrink-0">
+      <nav className="flex flex-col">
+        <Link href="/dashboard/homePage" className="py-3 px-3 flex flex-col items-center hover:bg-black hover:text-white rounded text-lg text-sm">
+        <FaHome className="mb-2 text-xl"/>
+        <span>Home</span>
         </Link>
-        <Link href="/dashboard/contacts"
-           className="py-2 px-4 hover:bg-gray-700 rounded">Contacts
+        <Link href="/dashboard/contacts" className="py-3 px-3 flex flex-col items-center hover:bg-black hover:text-white rounded text-lg text-sm">
+        <RiContactsBook3Fill className="mb-2 text-xl"/>
+        <span>Contacts</span>
         </Link>
         <Link href="/dashboard/leaves"
-           className="py-2 px-4 hover:bg-gray-700 rounded">Leave
+           className="py-3 px-3 flex flex-col items-center hover:bg-black hover:text-white rounded text-lg text-sm">
+           <FaClipboardList className="mb-2 text-xl" />
+           <span>Leaves</span>
         </Link>
       </nav>
     </aside>
