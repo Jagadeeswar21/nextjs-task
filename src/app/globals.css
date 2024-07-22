@@ -47,6 +47,16 @@ input,select{
   border-radius: 3px;
   padding: 2px 5px;
   font-size: 0.8em;
+}
+
+.rbc-show-more {
+  background-color: #3174ad;
+  color: #fff;
+  border-radius: 3px;
+  padding: 2px 5px;
+  font-size: 0.8em;
+  cursor: pointer;
+}
 
 .users-name:hover {
   color: #fff;
