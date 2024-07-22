@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
+import { Calendar, momentLocalizer, Views, View } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useSession } from 'next-auth/react';
@@ -22,7 +22,7 @@ const LeaveCalendar: React.FC = () => {
   const [leaveData, setLeaveData] = useState<LeaveData[]>([]);
   const [events, setEvents] = useState<any[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [view, setView] = useState<string>(Views.MONTH);
+  const [view, setView] = useState<View>(Views.MONTH);
 
   useEffect(() => {
     const fetchLeaveData = async () => {
@@ -90,8 +90,24 @@ const LeaveCalendar: React.FC = () => {
           </button>
         </div>
         <div className="flex items-center">
-          
-          
+          <button
+            className={`${view === Views.DAY ? "bg-[#292929] text-white" : "bg-[#ececec] text-black"} px-4 py-1 mx-1 rounded`}
+            onClick={() => setView(Views.DAY)}
+          >
+            Today
+          </button>
+          <button
+            className={`${view === Views.WEEK ? "bg-[#292929] text-white" : "bg-[#ececec] text-black"} px-4 py-1 mx-1 rounded`}
+            onClick={() => setView(Views.WEEK)}
+          >
+            Week
+          </button>
+          <button
+            className={`${view === Views.MONTH ? "bg-[#292929] text-white" : "bg-[#ececec] text-black"} px-4 py-1 mx-1 rounded`}
+            onClick={() => setView(Views.MONTH)}
+          >
+            Month
+          </button>
         </div>
       </div>
       <Calendar
@@ -99,9 +115,10 @@ const LeaveCalendar: React.FC = () => {
         events={events}
         startAccessor="start"
         endAccessor="end"
-        style={{ height: '100%', width: '88%' }}
+        style={{ height: '100%', width: '100%' }}
         date={currentDate}
         onNavigate={(date) => setCurrentDate(date)}
+        toolbar={false}
         view={view}
         onView={(newView) => setView(newView)}
       />
