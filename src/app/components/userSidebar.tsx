@@ -15,7 +15,7 @@ const Sidebar: React.FC = () => {
         <span>Contacts</span>
         </Link>
         <Link href="/dashboard/leaves"
-           className="py-3 px-3 flex flex-col items-center hover:bg-black hover:text-white rounded text-lg text-sm">
+           className="py-3 px-3 flex flex-col items-center hover:bg-black hover:text-white rounded  text-sm">
            <FaClipboardList className="mb-2 text-xl" />
            <span>Leaves</span>
         </Link>

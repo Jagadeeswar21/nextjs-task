@@ -113,6 +113,7 @@ const LeavesPage: React.FC = () => {
           Request leave
         </button>
       </div>
+      <div className="bg-white p-[15px] rounded shadow-lg">
       <table className="min-w-full border-collapse border border-gray-400 leading-normal">
         <thead>
           <tr>
@@ -142,6 +143,7 @@ const LeavesPage: React.FC = () => {
           ))}
         </tbody>
       </table>
+      </div>
 
       <Pagination
         currentPage={currentPage}
