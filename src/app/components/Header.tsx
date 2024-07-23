@@ -127,7 +127,7 @@ const Header: React.FC = () => {
                     className="h-8 w-8 rounded-full object-cover"
                   />
                 ) : (
-                  <CgProfile className="h-8 w-8" />
+                  <CgProfile className=" text-black h-8 w-8" />
                 )}
                 <span className="flex gap-3 align-middle text-black font-bold text-lg">{session.user.name}</span>
               </button>
