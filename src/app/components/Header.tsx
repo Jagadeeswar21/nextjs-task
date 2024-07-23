@@ -101,9 +101,9 @@ const Header: React.FC = () => {
   return (
     <>
       <header className="bg-white text-white border-b-2 shadow-lg fixed top-0 w-full h-[64px] flex items-center justify-between p-3 z-50">
-      <div className="px-3">
-      <Image src="/logo.png" alt="Logo" width={50} height={20} />
-      </div>
+        <div className="px-3">
+          <Image src="/logo.png" alt="Logo" width={50} height={20} />
+        </div>
         {session ? (
           <div className="flex items-center gap-4 relative">
             <button
@@ -148,7 +148,7 @@ const Header: React.FC = () => {
                       }}
                       className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white gap-2"
                     >
-                      
+
                       <IoLogOutOutline className="h-5 w-5" /> <span>Logout</span>
                     </button>
                   </div>

@@ -1,4 +1,4 @@
-// /app/api/leaves/count/route.ts
+
 import { connectMongoDB } from '../../../../../lib/mongodb';
 import Leave from '../../../../../models/leaveSchema';
 import { NextResponse } from 'next/server';

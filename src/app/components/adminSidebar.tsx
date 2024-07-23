@@ -8,9 +8,9 @@ const Adminsidebar: React.FC = () => {
     <aside className="w-[6rem] fixed left-0 h-[calc(100vh)] mt-[64px] bg-white border-r-2 shadow-xl text-black flex-shrink-0">
       <nav className="flex flex-col ">
         <Link href="/adminDashboard/dashboard" className="py-3 px-3 flex flex-col items-center hover:bg-black hover:text-white rounded text-lg text-sm">
-          <MdDashboard className="mb-2 text-xl"/> 
+          <MdDashboard className="mb-2 text-xl" />
           <span>Dashboard</span>
-          </Link>
+        </Link>
         <Link href="/adminDashboard/users" className="py-3 px-3 flex flex-col items-center hover:bg-black hover:text-white rounded text-lg text-sm">
           <FaUser className="mb-2 text-xl" />
           <span>Users</span>
