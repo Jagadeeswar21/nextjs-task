@@ -19,7 +19,6 @@ type LeaveData = {
 
 const LeaveCalendar: React.FC = () => {
   const { data: session } = useSession();
-  const [leaveData, setLeaveData] = useState<LeaveData[]>([]);
   const [events, setEvents] = useState<any[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<View>(Views.MONTH);
@@ -38,7 +37,7 @@ const LeaveCalendar: React.FC = () => {
             const start = new Date(leave.startDate);
             const end = new Date(leave.endDate);
             let currentDate = start;
-            
+
             while (currentDate <= end) {
               formattedEvents.push({
                 start: new Date(currentDate),
@@ -49,7 +48,7 @@ const LeaveCalendar: React.FC = () => {
               currentDate.setDate(currentDate.getDate() + 1);
             }
           });
-          
+
           setEvents(formattedEvents);
         } catch (error) {
           console.error('Error fetching leave data:', error);
