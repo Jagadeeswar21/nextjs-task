@@ -79,6 +79,20 @@ const Admin = () => {
   const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
   
+    const CustomTooltip = ({ active, payload }: any) => {
+      if (active && payload && payload.length) {
+        const date = new Date(selectedYear, selectedMonth - 1, payload[0].payload.day);
+        const formattedDate = `${date.getDate()} ${monthNames[date.getMonth()]}`;
+        return (
+          <div className="custom-tooltip">
+            <p className="label">{`${formattedDate}`}</p>
+            <p className="intro">{`${payload[0].value} Leaves`}</p>
+          </div>
+        );
+      }
+      return null;
+    };
+  
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <main className="flex-1 p-4">
@@ -179,7 +193,7 @@ const Admin = () => {
                 <XAxis dataKey="day" />
                 <YAxis  tickFormatter={(value: number) => Math.round(value).toString()}
                   allowDecimals={false}/>
-                <Tooltip formatter={(value: number) => [Math.round(value).toString(), "Leaves"]}/>
+                <Tooltip content={<CustomTooltip />} />
                 <Legend />
                 <Line type="monotone" dataKey="leaves" stroke="#8884d8" activeDot={{ r: 8 }} />
               </LineChart>
