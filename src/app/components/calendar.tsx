@@ -7,15 +7,19 @@ import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { FaChevronLeft, FaChevronRight, FaCalendarAlt } from "react-icons/fa";
 import Modal from 'react-modal';
+import EditLeaveBtn from './editleavebtn';
+import { HiX } from 'react-icons/hi';
 
 const localizer = momentLocalizer(moment);
 
 type LeaveData = {
+  _id: string;
   startDate: string;
   endDate: string;
   user: {
     name: string;
   };
+  numberofdays:number;
   status: string;
   reason: string;
   dateRange: string;
@@ -166,11 +170,19 @@ const LeaveCalendar: React.FC<LeaveCalendarProps> = ({ statusFilter }) => {
           className="modal"
           overlayClassName="modal-overlay"
         >
-          <h2>{selectedEvent.user.name}</h2>
-          <p>Date Range: {selectedEvent.dateRange}</p>
-          {selectedEvent.status === 'pending' && <p>Reason: {selectedEvent.reason}</p>}
-          <p>Status: <span style={{ color: getStatusColor(selectedEvent.status) }}>{selectedEvent.status}</span></p>
-          <button onClick={() => setIsModalOpen(false)}>Close</button>
+          <div className="flex justify-between items-center w-full mb-4">
+            <h2 className="font-bold">{selectedEvent.user.name}</h2>
+            <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-gray-700">
+              <HiX size={24} />
+            </button>
+          </div>
+          <p>Number of Days:  {selectedEvent.numberofdays}</p>
+          <p>Date Range:  {selectedEvent.dateRange}</p>
+          {selectedEvent.status === 'pending' && <p>Reason:  {selectedEvent.reason}</p>}
+          <div className="flex items-center gap-6">
+          <p>Status:  <span style={{ color: getStatusColor(selectedEvent.status) }}>{selectedEvent.status}</span></p>
+          <EditLeaveBtn id={selectedEvent._id} currentStatus={selectedEvent.status} />
+          </div>
         </Modal>
       )}
     </div>
