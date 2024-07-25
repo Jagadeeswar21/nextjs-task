@@ -18,7 +18,8 @@ type LeaveData = {
   };
   status: string;
   reason: string;
-  dateRange: string; 
+  dateRange: string;
+  date :string
 };
 
 const LeaveCalendar: React.FC = () => {
@@ -57,16 +58,16 @@ const LeaveCalendar: React.FC = () => {
               }
             } else if (leave.status === 'pending') {
               formattedEvents.push({
-                start: start,
-                end: start,
+                start: new Date(leave.date),
+                end: new Date(leave.date),
                 title: leave.user?.name,
                 leave, 
                 allDay: true,
               });
             } else if (leave.status === 'rejected') {
               formattedEvents.push({
-                start: start,
-                end: start,
+                start:new Date(leave.date),
+                end: new Date(leave.date),
                 title: leave.user?.name,
                 leave, 
                 allDay: true,
