@@ -1,10 +1,11 @@
-'use client'
+"use client";
 import { useEffect, useState } from "react";
 import EditLeaveBtn from "./editleavebtn";
 import RemoveLeave from "./removeleavebtn";
-import Pagination from './pagination';
-import LeaveCalendar from "@/app/components/calendar"; 
-import { FaCalendarAlt } from "react-icons/fa";
+import Pagination from "./pagination";
+import LeaveCalendar from "@/app/components/calendar";
+import { FaCalendarAlt, FaList } from "react-icons/fa";
+
 interface LeaveListProps {
   role: string;
 }
@@ -26,8 +27,8 @@ export default function LeaveList({ role }: LeaveListProps) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [statusFilter, setStatusFilter] = useState<string>("");
-  const [showCalendar, setShowCalendar] = useState<boolean>(false); // State for calendar visibility
-  const leavesPerPage = 5;
+  const [view, setView] = useState<"list" | "calendar">("list");
+  const leavesPerPage = 7;
 
   const getLeaves = async () => {
     try {
@@ -54,32 +55,46 @@ export default function LeaveList({ role }: LeaveListProps) {
     setCurrentPage(page);
   };
 
-  const handleStatusFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleStatusFilterChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     const filterValue = e.target.value;
     setStatusFilter(filterValue);
     if (filterValue === "") {
       setTotalPages(Math.ceil(leaves.length / leavesPerPage));
     } else {
-      const filteredLeaves = leaves.filter((leave) => leave.status === filterValue);
+      const filteredLeaves = leaves.filter(
+        (leave) => leave.status === filterValue
+      );
       setTotalPages(Math.ceil(filteredLeaves.length / leavesPerPage));
     }
     setCurrentPage(1);
   };
 
-  const filteredLeaves = statusFilter === "" ? leaves : leaves.filter(leave =>
-    leave.status === statusFilter
-  );
+  const filteredLeaves =
+    statusFilter === ""
+      ? leaves
+      : leaves.filter((leave) => leave.status === statusFilter);
 
   return (
     <div className="p-4">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-xl font-bold">Leave List</h2>
         <div className="flex items-center">
-          <button 
-            onClick={() => setShowCalendar(!showCalendar)} 
-            className="flex items-center p-2 border border-[#eaedf1] rounded bg-white"
+          <button
+            onClick={() => setView("list")}
+            className={`flex items-center p-2 border border-[#eaedf1] rounded bg-white ${
+              view === "list" ? "bg-blue-200" : ""
+            }`}
           >
-            {showCalendar ? 'Hide Calendar' : 'Show Calendar'}
+            <FaList className="ml-2" />
+          </button>
+          <button
+            onClick={() => setView("calendar")}
+            className={`flex items-center p-2 border border-[#eaedf1] rounded bg-white ${
+              view === "calendar" ? "bg-blue-200" : ""
+            } ml-2`}
+          >
             <FaCalendarAlt className="ml-2" />
           </button>
           <select
@@ -96,39 +111,68 @@ export default function LeaveList({ role }: LeaveListProps) {
         </div>
       </div>
 
-      {showCalendar ? (
+      {view === "calendar" ? (
         <div className="mb-4">
-          <LeaveCalendar />
+          <LeaveCalendar statusFilter={statusFilter} />
         </div>
       ) : (
         <div className="bg-white p-[15px] rounded shadow-lg">
           <table className="min-w-full border-collapse border border-[#eaedf1] leading-normal">
             <thead>
               <tr>
-                <th className="border w-[8%] border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]">Date</th>
-                <th className="border w-[8%] border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]">Number of Days</th>
-                <th className="border w-[16%] border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]">Date Range</th>
-                <th className="border w-[8%] border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]">Status</th>
-                <th className="border w-[20%] border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]">Reason</th>
+                <th className="border w-[8%] border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]">
+                  Date
+                </th>
+                <th className="border w-[8%] border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]">
+                  Number of Days
+                </th>
+                <th className="border w-[16%] border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]">
+                  Date Range
+                </th>
+                <th className="border w-[8%] border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]">
+                  Status
+                </th>
+                <th className="border w-[20%] border-[#eaedf1] p-1 font-medium text-[0.875rem] text-[#2e3138]">
+                  Reason
+                </th>
                 {(role === "admin" || role === "manager") && (
-                  <th className="border w-[8%] border-[#eaedf1] p-1 text-[0.875rem] font-medium">Actions</th>
+                  <th className="border w-[8%] border-[#eaedf1] p-1 text-[0.875rem] font-medium">
+                    Actions
+                  </th>
                 )}
               </tr>
             </thead>
             <tbody>
-              {filteredLeaves.slice((currentPage - 1) * leavesPerPage, currentPage * leavesPerPage)
+              {filteredLeaves
+                .slice(
+                  (currentPage - 1) * leavesPerPage,
+                  currentPage * leavesPerPage
+                )
                 .map((leave: Leave) => (
                   <tr key={leave._id}>
-                    <td className="border border-[#eaedf1] p-1">{new Date(leave.date).toLocaleDateString()}</td>
-                    <td className="border border-[#eaedf1] p-1">{leave.numberofdays}</td>
-                    <td className="border border-[#eaedf1] p-1">{leave.dateRange}</td>
-                    <td className="border border-[#eaedf1] p-1">{leave.status}</td>
-                    <td className="border border-[#eaedf1] p-1">{leave.reason}</td>
+                    <td className="border border-[#eaedf1] p-1">
+                      {new Date(leave.date).toLocaleDateString()}
+                    </td>
+                    <td className="border border-[#eaedf1] p-1">
+                      {leave.numberofdays}
+                    </td>
+                    <td className="border border-[#eaedf1] p-1">
+                      {leave.dateRange}
+                    </td>
+                    <td className="border border-[#eaedf1] p-1">
+                      {leave.status}
+                    </td>
+                    <td className="border border-[#eaedf1] p-1">
+                      {leave.reason}
+                    </td>
                     {(role === "admin" || role === "manager") && (
                       <td className="border border-[#eaedf1] px-20">
                         <div className="flex gap-2">
                           {role === "admin" && <RemoveLeave id={leave._id} />}
-                          <EditLeaveBtn id={leave._id} currentStatus={leave.status} />
+                          <EditLeaveBtn
+                            id={leave._id}
+                            currentStatus={leave.status}
+                          />
                         </div>
                       </td>
                     )}
@@ -139,7 +183,7 @@ export default function LeaveList({ role }: LeaveListProps) {
         </div>
       )}
 
-      {!showCalendar && (
+      {view === "list" && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}

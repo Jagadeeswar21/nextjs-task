@@ -22,7 +22,11 @@ type LeaveData = {
   date :string
 };
 
-const LeaveCalendar: React.FC = () => {
+interface LeaveCalendarProps {
+  statusFilter: string;
+}
+
+const LeaveCalendar: React.FC<LeaveCalendarProps> = ({ statusFilter }) => {
   const { data: session } = useSession();
   const [events, setEvents] = useState<any[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -44,34 +48,28 @@ const LeaveCalendar: React.FC = () => {
             const start = new Date(leave.startDate);
             const end = new Date(leave.endDate);
 
-            if (leave.status === 'approved') {
-              let currentDate = start;
-              while (currentDate <= end) {
+            if (statusFilter === "" || leave.status === statusFilter) {
+              if (leave.status === 'approved') {
+                let currentDate = start;
+                while (currentDate <= end) {
+                  formattedEvents.push({
+                    start: new Date(currentDate),
+                    end: new Date(currentDate),
+                    title: leave.user?.name,
+                    leave,
+                    allDay: true,
+                  });
+                  currentDate.setDate(currentDate.getDate() + 1);
+                }
+              } else if (leave.status === 'pending' || leave.status === 'rejected') {
                 formattedEvents.push({
-                  start: new Date(currentDate),
-                  end: new Date(currentDate),
+                  start: new Date(leave.date),
+                  end: new Date(leave.date),
                   title: leave.user?.name,
                   leave,
                   allDay: true,
                 });
-                currentDate.setDate(currentDate.getDate() + 1);
               }
-            } else if (leave.status === 'pending') {
-              formattedEvents.push({
-                start: new Date(leave.date),
-                end: new Date(leave.date),
-                title: leave.user?.name,
-                leave, 
-                allDay: true,
-              });
-            } else if (leave.status === 'rejected') {
-              formattedEvents.push({
-                start:new Date(leave.date),
-                end: new Date(leave.date),
-                title: leave.user?.name,
-                leave, 
-                allDay: true,
-              });
             }
           });
 
@@ -85,7 +83,7 @@ const LeaveCalendar: React.FC = () => {
       }
     };
     fetchLeaveData();
-  }, [session]);
+  }, [session, statusFilter]);
 
   const handleMonthChange = (direction: 'prev' | 'next') => {
     const newDate = moment(currentDate).add(direction === 'prev' ? -1 : 1, 'month').toDate();
