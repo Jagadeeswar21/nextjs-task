@@ -6,6 +6,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { FaChevronLeft, FaChevronRight, FaCalendarAlt } from "react-icons/fa";
+import Modal from 'react-modal';
 
 const localizer = momentLocalizer(moment);
 
@@ -15,6 +16,9 @@ type LeaveData = {
   user: {
     name: string;
   };
+  status: string;
+  reason: string;
+  dateRange: string; 
 };
 
 const LeaveCalendar: React.FC = () => {
@@ -22,6 +26,8 @@ const LeaveCalendar: React.FC = () => {
   const [events, setEvents] = useState<any[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<View>(Views.MONTH);
+  const [selectedEvent, setSelectedEvent] = useState<LeaveData | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchLeaveData = async () => {
@@ -36,16 +42,35 @@ const LeaveCalendar: React.FC = () => {
           data.leaves.forEach((leave: LeaveData) => {
             const start = new Date(leave.startDate);
             const end = new Date(leave.endDate);
-            let currentDate = start;
 
-            while (currentDate <= end) {
+            if (leave.status === 'approved') {
+              let currentDate = start;
+              while (currentDate <= end) {
+                formattedEvents.push({
+                  start: new Date(currentDate),
+                  end: new Date(currentDate),
+                  title: leave.user?.name,
+                  leave,
+                  allDay: true,
+                });
+                currentDate.setDate(currentDate.getDate() + 1);
+              }
+            } else if (leave.status === 'pending') {
               formattedEvents.push({
-                start: new Date(currentDate),
-                end: new Date(currentDate),
+                start: start,
+                end: start,
                 title: leave.user?.name,
+                leave, 
                 allDay: true,
               });
-              currentDate.setDate(currentDate.getDate() + 1);
+            } else if (leave.status === 'rejected') {
+              formattedEvents.push({
+                start: start,
+                end: start,
+                title: leave.user?.name,
+                leave, 
+                allDay: true,
+              });
             }
           });
 
@@ -64,6 +89,11 @@ const LeaveCalendar: React.FC = () => {
   const handleMonthChange = (direction: 'prev' | 'next') => {
     const newDate = moment(currentDate).add(direction === 'prev' ? -1 : 1, 'month').toDate();
     setCurrentDate(newDate);
+  };
+
+  const handleEventClick = (event: any) => {
+    setSelectedEvent(event.leave);
+    setIsModalOpen(true);
   };
 
   const formattedMonthYear = moment(currentDate).format('MMMM YYYY');
@@ -121,9 +151,44 @@ const LeaveCalendar: React.FC = () => {
         view={view}
         onView={(newView) => setView(newView)}
         popup
+        onSelectEvent={handleEventClick}
+        eventPropGetter={(event) => ({
+          style: {
+            backgroundColor: getStatusColor(event.leave.status),
+            color: 'white',
+          },
+        })}
       />
+      {selectedEvent && (
+        <Modal
+          isOpen={isModalOpen}
+          onRequestClose={() => setIsModalOpen(false)}
+          contentLabel="Leave Details"
+          className="modal"
+          overlayClassName="modal-overlay"
+        >
+          <h2>{selectedEvent.user.name}</h2>
+          <p>Date Range: {selectedEvent.dateRange}</p>
+          {selectedEvent.status === 'pending' && <p>Reason: {selectedEvent.reason}</p>}
+          <p>Status: <span style={{ color: getStatusColor(selectedEvent.status) }}>{selectedEvent.status}</span></p>
+          <button onClick={() => setIsModalOpen(false)}>Close</button>
+        </Modal>
+      )}
     </div>
   );
+};
+
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'approved':
+      return 'green';
+    case 'pending':
+      return 'orange';
+    case 'rejected':
+      return 'red';
+    default:
+      return 'black';
+  }
 };
 
 export default LeaveCalendar;

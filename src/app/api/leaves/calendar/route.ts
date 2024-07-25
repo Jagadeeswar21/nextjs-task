@@ -6,7 +6,7 @@ import moment from 'moment';
 export async function GET(request: NextRequest) {
   try {
     await connectMongoDB();
-    const leaves = await Leave.find({ status: 'approved' }).populate('user', 'name').exec();
+    const leaves = await Leave.find().populate('user', 'name').exec();
     const transformedLeaves = leaves.map((leave) => {
       const [startDate, endDate] = leave.dateRange.split(' - ');
       return {
