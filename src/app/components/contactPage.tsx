@@ -6,6 +6,7 @@ import RemoveContact from './removeContact';
 import Pagination from './pagination';
 import toast from 'react-hot-toast';
 import { useSession } from 'next-auth/react';
+import  { contactService } from '@/services/contactService';
 
 interface Contact {
   _id?: string;
@@ -51,13 +52,7 @@ const ContactsPage: React.FC = () => {
   const handleSave = async (newContact: Contact) => {
     try {
       if (editingContact) {
-        await fetch(`/api/contacts/${newContact._id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(newContact),
-        });
+        await contactService.editContact(newContact)
         setContacts(prevContacts =>
           prevContacts.map(contact => (contact._id === newContact._id ? newContact : contact))
         );
@@ -65,15 +60,10 @@ const ContactsPage: React.FC = () => {
           position: "bottom-right"
         });
       } else {
-        await fetch('/api/contacts', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(newContact),
-        });
-        fetchContacts(currentPage);
+        await contactService.addContact(newContact)
+        
       }
+      
     } catch (error) {
       console.error('Failed to save contact', error);
     } finally {
