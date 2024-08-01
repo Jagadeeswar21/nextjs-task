@@ -26,7 +26,8 @@ export async function GET(req: NextRequest) {
       .populate('contact')
       .exec();
 
-    const sharedContacts = sharedContactDocs.map(doc => ({
+    const sharedContacts = sharedContactDocs.filter(doc => doc.contact)
+    .map(doc => ({
       ...doc.contact.toObject(),
       sharedBy: doc.sharedBy,
       _id: doc._id

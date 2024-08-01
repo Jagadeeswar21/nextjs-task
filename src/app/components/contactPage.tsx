@@ -1,4 +1,6 @@
-'use client';
+
+'use client'
+
 import React, { useEffect, useState } from 'react';
 import { HiPencilAlt, HiSearch, HiShare ,HiTrash} from 'react-icons/hi';
 import ContactForm from './contactForm';
@@ -22,7 +24,7 @@ const ContactsPage: React.FC = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const [showForm, setShowForm] = useState<boolean>(false);
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const { data: session, status } = useSession();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -33,14 +35,12 @@ const ContactsPage: React.FC = () => {
   const fetchContacts = async (page: number) => {
     if (!session) return;
     try {
-      const res = await fetch(
-        `/api/contacts?page=${page}&limit=${contactsPerPage}`
-      );
+      const res = await fetch(`/api/contacts?page=${page}&limit=${contactsPerPage}`);
       const data = await res.json();
       setContacts(data.contacts || []);
       setTotalPages(data.totalPages || 1);
     } catch (error) {
-      console.error("Failed to fetch contacts", error);
+      console.error('Failed to fetch contacts', error);
     }
   };
 
@@ -56,55 +56,61 @@ const ContactsPage: React.FC = () => {
   };
 
   const handleSave = async (newContact: Contact) => {
-    console.log(newContact, "newContact");
     try {
-      if (editingContact) {
-        console.log(editingContact, "editingContact");
-        const res = await contactService.editContact(newContact);
-        console.log(editingContact);
+      if (editingContact && editingContact._id) {
         await contactService.editContact(newContact);
-        setContacts((prevContacts) =>
-          prevContacts.map((contact) =>
-            contact._id === newContact._id ? newContact : contact
+        setContacts(prevContacts =>
+          prevContacts.map(contact =>
+            contact._id === editingContact._id ? newContact : contact
           )
         );
         toast.success("Successfully edited!", {
-          position: "bottom-right",
+          position: "bottom-right"
         });
       } else {
-        //await contactService.addContact(newContact);
-         await contactService.addContact(newContact);
+        const res=await contactService.addContact(newContact);
+        console.log(res)
         toast.success("Successfully added!", {
           position: "bottom-right"
         });
         fetchContacts(currentPage)
       }
     } catch (error) {
-      console.error("Failed to save contact", error);
+      console.error('Failed to save contact', error);
+      toast.error('Failed to save contact', {
+        position: "bottom-right"
+      });
     } finally {
       setShowForm(false);
-      fetchContacts(currentPage);
     }
   };
 
   const handleDelete = async (id: string) => {
-    await contactService.deleteContact(id);
-    setContacts((prevContacts) =>
-      prevContacts.filter((contact) => contact._id !== id)
-    );
+    try {
+      await contactService.deleteContact(id);
+      setContacts(contacts.filter(contact => contact._id !== id));
+      toast.success("Successfully deleted!", {
+        position: "bottom-right"
+      });
+    } catch (error) {
+      console.error('Failed to delete contact', error);
+      toast.error('failed to delete contact', {
+        position: "bottom-right"
+      });
+    }
   };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  const filteredContacts = contacts.filter((contact) =>
+  const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (status === "loading") return <p>Loading...</p>;
+  if (status === 'loading') return <p>Loading...</p>;
 
-  if (status === "unauthenticated") {
+  if (status === 'unauthenticated') {
     return <p>Please log in to view your contacts.</p>;
   }
 
@@ -123,10 +129,7 @@ const ContactsPage: React.FC = () => {
             className="p-2 pl-10 rounded-full border border-gray-400 focus:outline-none focus:ring focus:border-blue-300 bg-white w-full"
           />
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="bg-blue-500 text-white px-3 text-sm py-2 rounded"
-        >
+        <button onClick={() => setShowForm(true)} className="bg-blue-500 text-white px-3 text-sm py-2 rounded">
           Create New Contact
         </button>
       </div>
@@ -143,31 +146,22 @@ const ContactsPage: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredContacts.map((contact) => (
+            {filteredContacts.map(contact => (
               <tr key={contact._id}>
                 <td className="border border-gray-400 p-1">{contact.name}</td>
                 <td className="border border-gray-400 p-1">{contact.email}</td>
                 <td className="border border-gray-400 p-1">{contact.phone}</td>
                 <td className="border border-gray-400 p-1">{contact.status}</td>
                 <td className="border border-gray-400 p-1">
-                  {contact.sharedBy ? (
-                    <span className="text-sm text-gray-500">Shared</span>
-                  ) : (
-                    <>
                       <button onClick={() => handleEdit(contact)} className="text-blue-500 hover:text-blue-700 p-2">
                         <HiPencilAlt />
                       </button>
-                      <button
-                    onClick={() => handleDelete(contact._id!)}
-                    className="text-red-500 hover:text-red-700 p-2"
-                  >
-                    <HiTrash />
-                  </button>
+                      {/* <RemoveContact id={contact._id!} onDelete={() => handleDelete(contact._id!)} /> */}
+                      <button onClick={()=>handleDelete(contact._id!)} className="text-red-500 hover:text-red-700 p-2"><HiTrash />
+    </button>
                       <button onClick={() => setShareContactId(contact._id!)} className="text-green-500 hover:text-green-700 p-2">
                         <HiShare />
                       </button>
-                    </>
-                  )}
                 </td>
               </tr>
             ))}
@@ -185,7 +179,6 @@ const ContactsPage: React.FC = () => {
         <ContactForm
           contact={editingContact}
           onClose={() => {
-            setEditingContact(null);
             setShowForm(false);
           }}
           onSave={handleSave}

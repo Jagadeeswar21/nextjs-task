@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -29,6 +30,18 @@ type LeaveRequest = {
   reason: string;
 };
 
+export interface Leave {
+  _id: string;
+  date: string;
+  numberofleaves: number;
+  numberofdays: number;
+  startDate: string;
+  endDate: string;
+  dateRange: string;
+  status: string;
+  reason: string;
+}
+
 const Admin = () => {
   const [userCount, setUserCount] = useState(0);
   const [totalLeaves, setTotalLeaves] = useState(0);
@@ -38,9 +51,30 @@ const Admin = () => {
   const [dailyLeavesData, setDailyLeavesData] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [leaves, setLeaves] = useState<Leave[]>([]);
   const router = useRouter();
 
+  const getLeaves = async () => {
+    try {
+      const res = await fetch(`/api/leaves/edit`, {
+        cache: "no-store",
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch leaves");
+      }
+      const data = await res.json();
+      setLeaves(data.leaves || []);
+      //setTotalPages(Math.ceil(data.leaves.length / leavesPerPage));
+    } catch (error) {
+      console.log("Error loading leave details: ", error);
+    }
+  };
+  console.log(getLeaves,"grt")
+  
   useEffect(() => {
+    getLeaves()
+    
     const fetchData = async () => {
       try {
         const [userResponse, leaveResponse, approvedResponse, rejectedResponse, latestResponse,dailyResponse] = await Promise.all([
@@ -73,8 +107,8 @@ const Admin = () => {
         console.error("Error fetching data:", error);
       }
     };
-
     fetchData();
+    
   }, [selectedMonth, selectedYear]);
   const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
@@ -150,8 +184,8 @@ const Admin = () => {
                   <td className="py-2 px-4 border-b">{leave.reason}</td>
                   <td className="py-2 px-4 border-b">
                     <div className="flex gap-2">
-                      <RemoveLeave id={leave._id} />
-                      <EditLeaveBtn id={leave._id} currentStatus={leave.status} />
+                      <RemoveLeave id={leave._id} getLeaves={getLeaves} />
+                      <EditLeaveBtn id={leave._id} currentStatus={leave.status} getLeaves={getLeaves}  />
                     </div>
                   </td>
                 </tr>

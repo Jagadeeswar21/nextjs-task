@@ -6,26 +6,27 @@ import { userService } from '@/services/userService';
 
 interface RemoveBtnProps {
   id: string;
-  getUsers:any
+  getUsers: () => void;
 }
 
-const RemoveBtn: React.FC<RemoveBtnProps> = ({ id,getUsers }) => {
+const RemoveBtn: React.FC<RemoveBtnProps> = ({ id, getUsers }) => {
   const handleRemove = async () => {
     try {
-      const res=await userService.editUserStatus(id, 'inactive',"true");//unable to delete cnt
+      await userService.editUserStatus(id,"inactive",true);
       toast.success("Successfully deleted!", {
-        position: "bottom-right",
+        position: "bottom-right"
       });
-      console.log(res);
       getUsers();
     } catch (error) {
-      toast.error("Failed to delete user. Please try again.", {
-        position: "bottom-right",
+      console.error('Failed to update user status:', error);
+      toast.error('Failed to delete user', {
+        position: "bottom-right"
       });
     }
   };
+
   return (
-    <button onClick={handleRemove} className="text-red-500 hover:text-red-700 p-2">
+    <button onClick={handleRemove}>
       <HiTrash size={24} />
     </button>
   );
