@@ -57,7 +57,7 @@ export const leaveService = {
   
     getLeaves: async () => {
       try {
-        const res = await fetch("/api/leaves/get", { cache: "no-store" });
+        const res = await fetch("/api/leaves/edit", { cache: "no-store" });
   
         if (!res.ok) {
           throw Error("Failed to fetch leaves");
