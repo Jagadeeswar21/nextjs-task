@@ -1,19 +1,21 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import { HiPencilAlt, HiSearch, HiTrash } from "react-icons/hi";
-import ContactForm from "./contactForm";
-import RemoveContact from "./removeContact";
-import Pagination from "./pagination";
-import toast from "react-hot-toast";
-import { useSession } from "next-auth/react";
-import { contactService } from "@/services/contactService";
+'use client';
+import React, { useEffect, useState } from 'react';
+import { HiPencilAlt, HiSearch, HiShare } from 'react-icons/hi';
+import ContactForm from './contactForm';
+import RemoveContact from './removeContact';
+import Pagination from './pagination';
+import toast from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
+import { contactService } from '@/services/contactService';
+import ShareContact from './shareContact';
 
 interface Contact {
   _id?: string;
   name: string;
   email: string;
   phone: string;
-  status: "active" | "inactive";
+  status: 'active' | 'inactive';
+  sharedBy?: string;
 }
 
 const ContactsPage: React.FC = () => {
@@ -24,6 +26,8 @@ const ContactsPage: React.FC = () => {
   const { data: session, status } = useSession();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [shareContactId, setShareContactId] = useState<string | null>(null);
+
   const contactsPerPage = 5;
 
   const fetchContacts = async (page: number) => {
@@ -58,6 +62,7 @@ const ContactsPage: React.FC = () => {
         console.log(editingContact, "editingContact");
         const res = await contactService.editContact(newContact);
         console.log(editingContact);
+        await contactService.editContact(newContact);
         setContacts((prevContacts) =>
           prevContacts.map((contact) =>
             contact._id === newContact._id ? newContact : contact
@@ -68,6 +73,11 @@ const ContactsPage: React.FC = () => {
         });
       } else {
         //await contactService.addContact(newContact);
+         await contactService.addContact(newContact);
+        toast.success("Successfully added!", {
+          position: "bottom-right"
+        });
+        fetchContacts(currentPage)
       }
     } catch (error) {
       console.error("Failed to save contact", error);
@@ -140,22 +150,19 @@ const ContactsPage: React.FC = () => {
                 <td className="border border-gray-400 p-1">{contact.phone}</td>
                 <td className="border border-gray-400 p-1">{contact.status}</td>
                 <td className="border border-gray-400 p-1">
-                  <button
-                    onClick={() => handleEdit(contact)}
-                    className="text-blue-500 hover:text-blue-700 p-2"
-                  >
-                    <HiPencilAlt />
-                  </button>
-                  {/*<RemoveContact
-                    id={contact._id!}
-                    onDelete={() => handleDelete(contact._id!)}
-                  />*/}
-                  <button
-                    onClick={() => handleDelete(contact._id!)}
-                    className="text-red-500 hover:text-red-700 p-2"
-                  >
-                    <HiTrash />
-                  </button>
+                  {contact.sharedBy ? (
+                    <span className="text-sm text-gray-500">Shared</span>
+                  ) : (
+                    <>
+                      <button onClick={() => handleEdit(contact)} className="text-blue-500 hover:text-blue-700 p-2">
+                        <HiPencilAlt />
+                      </button>
+                      <RemoveContact id={contact._id!} onDelete={() => handleDelete(contact._id!)} />
+                      <button onClick={() => setShareContactId(contact._id!)} className="text-green-500 hover:text-green-700 p-2">
+                        <HiShare />
+                      </button>
+                    </>
+                  )}
                 </td>
               </tr>
             ))}
@@ -177,6 +184,12 @@ const ContactsPage: React.FC = () => {
             setShowForm(false);
           }}
           onSave={handleSave}
+        />
+      )}
+      {shareContactId && (
+        <ShareContact
+          contactId={shareContactId}
+          onClose={() => setShareContactId(null)}
         />
       )}
     </div>

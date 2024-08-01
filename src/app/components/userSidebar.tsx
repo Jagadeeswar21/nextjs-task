@@ -1,24 +1,36 @@
+'use client'
 import React from 'react';
 import Link from 'next/link';
-import { FaHome,FaClipboardList } from 'react-icons/fa';
+import { usePathname } from 'next/navigation';
+import { FaHome, FaClipboardList } from 'react-icons/fa';
 import { RiContactsBook3Fill } from "react-icons/ri";
+
 const Sidebar: React.FC = () => {
+  const pathname = usePathname();
+
+  const links = [
+    { href: '/dashboard/homePage', icon: FaHome, label: 'Home' },
+    { href: '/dashboard/contacts', icon: RiContactsBook3Fill, label: 'Contacts' },
+    { href: '/dashboard/leaves', icon: FaClipboardList, label: 'Leaves' },
+  ];
+
   return (
-    <aside  className="w-[6rem] fixed left-0 h-[calc(100vh)] mt-[64px] bg-white border-r-2 shadow-xl text-black flex-shrink-0">
+    <aside className="w-[6rem] fixed left-0 h-[calc(100vh)] mt-[64px] bg-white border-r-2 shadow-xl text-black flex-shrink-0">
       <nav className="flex flex-col">
-        <Link href="/dashboard/homePage" className="py-3 px-3 flex flex-col items-center hover:bg-black hover:text-white rounded text-lg text-sm">
-        <FaHome className="mb-2 text-xl"/>
-        <span>Home</span>
-        </Link>
-        <Link href="/dashboard/contacts" className="py-3 px-3 flex flex-col items-center hover:bg-black hover:text-white rounded text-lg text-sm">
-        <RiContactsBook3Fill className="mb-2 text-xl"/>
-        <span>Contacts</span>
-        </Link>
-        <Link href="/dashboard/leaves"
-           className="py-3 px-3 flex flex-col items-center hover:bg-black hover:text-white rounded  text-sm">
-           <FaClipboardList className="mb-2 text-xl" />
-           <span>Leaves</span>
-        </Link>
+        {links.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className={`py-3 px-3 flex flex-col items-center rounded text-lg text-sm ${
+              pathname === link.href
+                ? 'bg-black text-white'
+                : 'hover:bg-black hover:text-white'
+            }`}
+          >
+            <link.icon className="mb-2 text-xl" />
+            <span>{link.label}</span>
+          </Link>
+        ))}
       </nav>
     </aside>
   );
