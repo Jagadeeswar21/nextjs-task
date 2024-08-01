@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { HiPencilAlt, HiSearch, HiShare } from 'react-icons/hi';
+import { HiPencilAlt, HiSearch, HiShare ,HiTrash} from 'react-icons/hi';
 import ContactForm from './contactForm';
 import RemoveContact from './removeContact';
 import Pagination from './pagination';
@@ -157,7 +157,12 @@ const ContactsPage: React.FC = () => {
                       <button onClick={() => handleEdit(contact)} className="text-blue-500 hover:text-blue-700 p-2">
                         <HiPencilAlt />
                       </button>
-                      <RemoveContact id={contact._id!} onDelete={() => handleDelete(contact._id!)} />
+                      <button
+                    onClick={() => handleDelete(contact._id!)}
+                    className="text-red-500 hover:text-red-700 p-2"
+                  >
+                    <HiTrash />
+                  </button>
                       <button onClick={() => setShareContactId(contact._id!)} className="text-green-500 hover:text-green-700 p-2">
                         <HiShare />
                       </button>

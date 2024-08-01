@@ -33,7 +33,14 @@ export default function LeaveList({ role }: LeaveListProps) {
 
   const getLeaves = async () => {
     try {
-      const data = await leaveService.getLeaves();
+      const res = await fetch(`/api/leaves/edit`, {
+        cache: "no-store",
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch leaves");
+      }
+      const data = await res.json();
       setLeaves(data.leaves || []);
       setTotalPages(Math.ceil(data.leaves.length / leavesPerPage));
     } catch (error) {
