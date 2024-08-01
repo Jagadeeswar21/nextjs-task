@@ -2,38 +2,26 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import PasswordService from "@/services/passwordService";
 
 export default function ForgetPassword() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const { data: session } = useSession();
-  console.log(session);
   const router = useRouter();
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/forget-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-        }),
-      });
-      if (res.ok) {
-        router.push("/");
-      } else {
-        setError("User with this mail is not registered.");
-      }
+      await PasswordService.forgetPassword(email);
+      router.push("/");
     } catch (error: any) {
-      setError("Error during registration: " + error.message);
+      setError(error.message);
       console.log(error);
     }
   };
+
   return (
-    <div className="grid place-items-center h-screen  bg-gray-200">
+    <div className="grid place-items-center h-screen bg-gray-200">
       <div className="shadow-lg p-6 rounded-lg border-t-4 bg-white">
         <h1 className="text-xl font-bold my-4 text-black">Forget Password</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
@@ -42,10 +30,10 @@ export default function ForgetPassword() {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="placeholder-gray text-gray border border-gray focus:outline-none focus:ring focus:border-blue-300 border-gray-300 rounded-md "
+            className="placeholder-gray text-gray border border-gray focus:outline-none focus:ring focus:border-blue-300 border-gray-300 rounded-md"
           />
           <button className="bg-blue-500 hover:bg-blue-400 rounded-lg text-white font-bold px-6 py-2">
-            submit
+            Submit
           </button>
           {error && (
             <div className="text-red-500 w-fit text-sm py-1 px-3 rounded-md mt-2">
@@ -59,5 +47,4 @@ export default function ForgetPassword() {
       </div>
     </div>
   );
-  ` `;
 }

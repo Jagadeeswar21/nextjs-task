@@ -1,26 +1,25 @@
-// components/RemoveContact.tsx
 import React from 'react';
 import { HiTrash } from 'react-icons/hi';
-import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { contactService } from '@/services/contactService';
+
 interface RemoveContactProps {
   id: string;
-  onDelete:()=>void;
+  
 }
-const RemoveContact: React.FC<RemoveContactProps> = ({ id,onDelete}) => {
+
+const RemoveContact: React.FC<RemoveContactProps> = ({ id,  }) => {
   const handleDelete = async () => {
     try {
-      const res = await fetch(`/api/contacts/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        toast.success("successfully deleted!",{
-          position:"bottom-right"
-        });
-        onDelete()
-      } else {
-        console.error('Failed to delete contact');
-      }
+      await contactService.deleteContact(id);
+      toast.success("Successfully deleted!", {
+        position: "bottom-right",
+      });
+      //onDelete();
     } catch (error) {
-      console.error('Failed to delete contact', error);
+      toast.error("Failed to delete contact. Please try again.", {
+        position: "bottom-right",
+      });
     }
   };
 

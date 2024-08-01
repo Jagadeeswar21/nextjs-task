@@ -5,6 +5,7 @@ import RemoveLeave from "./removeleavebtn";
 import Pagination from "./pagination";
 import LeaveCalendar from "@/app/components/calendar";
 import { FaCalendarAlt, FaList } from "react-icons/fa";
+import { leaveService } from "@/services/userleaveService";
 
 interface LeaveListProps {
   role: string;
@@ -32,14 +33,7 @@ export default function LeaveList({ role }: LeaveListProps) {
 
   const getLeaves = async () => {
     try {
-      const res = await fetch(`/api/leaves/edit`, {
-        cache: "no-store",
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to fetch leaves");
-      }
-      const data = await res.json();
+      const data = await leaveService.getLeaves();
       setLeaves(data.leaves || []);
       setTotalPages(Math.ceil(data.leaves.length / leavesPerPage));
     } catch (error) {
@@ -168,10 +162,11 @@ export default function LeaveList({ role }: LeaveListProps) {
                     {(role === "admin" || role === "manager") && (
                       <td className="border border-[#eaedf1] px-20">
                         <div className="flex gap-2">
-                          {role === "admin" && <RemoveLeave id={leave._id} />}
+                          {role === "admin" && <RemoveLeave id={leave._id}  getLeaves={getLeaves} />}
                           <EditLeaveBtn
                             id={leave._id}
                             currentStatus={leave.status}
+                            getLeaves={getLeaves}
                           />
                         </div>
                       </td>

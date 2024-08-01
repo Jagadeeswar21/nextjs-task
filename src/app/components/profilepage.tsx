@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { profileService } from '@/services/profileService';
 
 type ExtendedSessionUser = {
   id: string;
@@ -34,11 +35,7 @@ const Profile: React.FC<ProfileProps> = ({ onClose }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/profile');
-        if (!response.ok) {
-          throw new Error('Failed to fetch user data');
-        }
-        const user = await response.json() as ExtendedSessionUser;
+        const user = await profileService.fetchProfile() as ExtendedSessionUser;
         setName(user.name || '');
         setEmail(user.email || '');
         setDateOfBirth(user.dateOfBirth || '');
@@ -70,15 +67,7 @@ const Profile: React.FC<ProfileProps> = ({ onClose }) => {
         formData.append('profilePicture', profilePicture);
       }
 
-      const response = await fetch(`/api/profile/${(session?.user as ExtendedSessionUser).id}`, {
-        method: 'PUT',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update profile');
-      }
-      const data = await response.json();
+      const data = await profileService.updateProfile((session?.user as ExtendedSessionUser).id, formData);
 
       if (data.user.profilePicture) {
         setDisplayProfilePic(data.user.profilePicture);
@@ -86,7 +75,7 @@ const Profile: React.FC<ProfileProps> = ({ onClose }) => {
       toast.success('Profile updated successfully!', {
         position: 'bottom-right',
       });
-      onClose()
+      onClose();
     } catch (error) {
       console.error('Failed to update profile', error);
       toast.error('Failed to update profile.', {

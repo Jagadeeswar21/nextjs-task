@@ -9,6 +9,7 @@ import { FaChevronLeft, FaChevronRight, FaCalendarAlt } from "react-icons/fa";
 import Modal from 'react-modal';
 import EditLeaveBtn from './editleavebtn';
 import { HiX } from 'react-icons/hi';
+import { leaveService } from '@/services/userleaveService';
 
 const localizer = momentLocalizer(moment);
 
@@ -19,11 +20,11 @@ type LeaveData = {
   user: {
     name: string;
   };
-  numberofdays:number;
+  numberofdays: number;
   status: string;
   reason: string;
   dateRange: string;
-  date :string
+  date: string;
 };
 
 interface LeaveCalendarProps {
@@ -42,11 +43,7 @@ const LeaveCalendar: React.FC<LeaveCalendarProps> = ({ statusFilter }) => {
     const fetchLeaveData = async () => {
       if (session) {
         try {
-          const response = await fetch('/api/leaves/calendar');
-          if (!response.ok) {
-            throw new Error('Failed to fetch leave data');
-          }
-          const data = await response.json();
+          const data = await leaveService.getCalenderLeaves();
           const formattedEvents: any[] = [];
           data.leaves.forEach((leave: LeaveData) => {
             const start = new Date(leave.startDate);
@@ -176,12 +173,12 @@ const LeaveCalendar: React.FC<LeaveCalendarProps> = ({ statusFilter }) => {
               <HiX size={24} />
             </button>
           </div>
-          <p>Number of Days:  {selectedEvent.numberofdays}</p>
-          <p>Date Range:  {selectedEvent.dateRange}</p>
-          {selectedEvent.status === 'pending' && <p>Reason:  {selectedEvent.reason}</p>}
+          <p>Number of Days: {selectedEvent.numberofdays}</p>
+          <p>Date Range: {selectedEvent.dateRange}</p>
+          {selectedEvent.status === 'pending' && <p>Reason: {selectedEvent.reason}</p>}
           <div className="flex items-center gap-6">
-          <p>Status:  <span style={{ color: getStatusColor(selectedEvent.status) }}>{selectedEvent.status}</span></p>
-          <EditLeaveBtn id={selectedEvent._id} currentStatus={selectedEvent.status} />
+            <p>Status: <span style={{ color: getStatusColor(selectedEvent.status) }}>{selectedEvent.status}</span></p>
+            <EditLeaveBtn id={selectedEvent._id} currentStatus={selectedEvent.status} />
           </div>
         </Modal>
       )}

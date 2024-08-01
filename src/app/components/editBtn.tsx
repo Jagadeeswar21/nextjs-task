@@ -1,34 +1,28 @@
 'use client';
 import React, { useState } from 'react';
 import { HiPencilAlt } from 'react-icons/hi';
-import { useRouter } from 'next/navigation';
+import { userService } from '@/services/userService';
+
 interface EditBtnProps {
   id: string;
   currentStatus: string;
+  getUsers: () => void;
 }
 
-const EditBtn: React.FC<EditBtnProps> = ({ id, currentStatus }) => {
+const EditBtn: React.FC<EditBtnProps> = ({ id, currentStatus, getUsers 
+
+  
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState(currentStatus);
-  const router = useRouter()
+
   const handleSave = async () => {
     try {
-      const res = await fetch(`/api/users/${id}/edit`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status }),
-      });
-
-      if (res.ok) {
-        setIsOpen(false)
-        router.refresh()
-      } else {
-        console.error('Failed to update user status');
-      }
+      await userService.editUserStatus(id, status,"true");
+      setIsOpen(false);
+      getUsers(); 
     } catch (error) {
-      console.error(error)
+      console.error('Failed to update user status', error);
     }
   };
 
@@ -62,7 +56,7 @@ const EditBtn: React.FC<EditBtnProps> = ({ id, currentStatus }) => {
                   onChange={() => setStatus('inactive')}
                   className="mr-2"
                 />
-               <span>Inactive</span>
+                <span>Inactive</span>
               </label>
             </div>
             <div className="mt-4 flex gap-2">

@@ -1,4 +1,3 @@
-
 import { connectMongoDB } from "../../../../lib/mongodb";
 import Contact from "../../../../models/contactSchema";
 import { NextRequest, NextResponse } from "next/server";

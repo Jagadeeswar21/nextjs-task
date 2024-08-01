@@ -1,13 +1,14 @@
-'use client'
-import React, { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+"use client";
+import React, { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { contactService } from "@/services/contactService";
 
 interface Contact {
   _id?: string;
   name: string;
   email: string;
   phone: string;
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
 }
 
 interface ContactFormProps {
@@ -16,13 +17,17 @@ interface ContactFormProps {
   onSave: (contact: Contact) => void;
 }
 
-const ContactForm: React.FC<ContactFormProps> = ({ contact, onClose, onSave }) => {
+const ContactForm: React.FC<ContactFormProps> = ({
+  contact,
+  onClose,
+  onSave,
+}) => {
   const { data: session } = useSession();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    status: 'active',
+    name: "",
+    email: "",
+    phone: "",
+    status: "active",
   });
 
   useEffect(() => {
@@ -36,47 +41,44 @@ const ContactForm: React.FC<ContactFormProps> = ({ contact, onClose, onSave }) =
     }
   }, [contact]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newContact = { ...formData, createdBy: session?.user?.id };
-    try {
-      const res = contact?._id
-        ? await fetch(`/api/contacts/${contact._id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(newContact),
-        })
-        : await fetch('/api/contacts', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(newContact),
-        });
+    const newContact:any = {
+      ...formData,
+      createdBy: session?.user?.id,
+      _id: contact?._id,
+    };
 
-      if (res.ok) {
-        const savedContact = await res.json();
-        onSave(savedContact);
-        onClose();
+    try {
+      let savedContact;
+      if (contact?._id) {
+        savedContact = await contactService.editContact({
+          newContact,
+          _id: contact._id,
+        });
       } else {
-        console.log('Failed to save contact');
+        savedContact = await contactService.addContact(newContact);
       }
+      onSave(newContact);
+      onClose();
     } catch (error) {
-      console.error('Failed to save contact', error);
+      console.error("Failed to save contact", error);
     }
   };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-xl font-bold mb-4">{contact ? 'Edit Contact' : 'Create New Contact'}</h2>
+        <h2 className="text-xl font-bold mb-4">
+          {contact ? "Edit Contact" : "Create New Contact"}
+        </h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
             type="text"
@@ -115,10 +117,17 @@ const ContactForm: React.FC<ContactFormProps> = ({ contact, onClose, onSave }) =
             <option value="inactive">Inactive</option>
           </select>
           <div className="flex justify-end gap-4">
-            <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-400 text-white rounded">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-400 text-white rounded"
+            >
               Cancel
             </button>
-            <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-500 text-white rounded"
+            >
               Save
             </button>
           </div>

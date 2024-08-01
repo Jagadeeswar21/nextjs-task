@@ -1,40 +1,31 @@
-
 'use client'
 import React from 'react';
 import { HiTrash } from 'react-icons/hi';
-import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { userService } from '@/services/userService';
+
 interface RemoveBtnProps {
   id: string;
+  getUsers:any
 }
-const RemoveBtn: React.FC<RemoveBtnProps> = ({ id }) => {
-  const router = useRouter()
 
+const RemoveBtn: React.FC<RemoveBtnProps> = ({ id,getUsers }) => {
   const handleRemove = async () => {
     try {
-      const res = await fetch(`/api/users/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body:JSON.stringify({status:"inactive",isDeleted:true})
+      const res=await userService.editUserStatus(id, 'inactive',"true");//unable to delete cnt
+      toast.success("Successfully deleted!", {
+        position: "bottom-right",
       });
-
-      if (res.ok) {
-        toast.success("successfully deleted!",{
-          position:"bottom-right"
-        });
-        router.refresh();
-      } else {
-        console.error('Failed to update user status');
-      }
+      console.log(res);
+      getUsers();
     } catch (error) {
-      console.error( error)
+      toast.error("Failed to delete user. Please try again.", {
+        position: "bottom-right",
+      });
     }
   };
-
   return (
-    <button onClick={handleRemove}>
+    <button onClick={handleRemove} className="text-red-500 hover:text-red-700 p-2">
       <HiTrash size={24} />
     </button>
   );

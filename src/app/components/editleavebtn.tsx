@@ -3,37 +3,31 @@ import React, { useState } from 'react';
 import { HiPencilAlt } from 'react-icons/hi';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { leaveService } from '@/services/userleaveService';
+
 interface EditLeaveBtnProps {
   id: string;
   currentStatus: string;
+  getLeaves?:any
 }
 
-const EditLeaveBtn: React.FC<EditLeaveBtnProps> = ({ id, currentStatus }) => {
+const EditLeaveBtn: React.FC<EditLeaveBtnProps> = ({ id, currentStatus,getLeaves }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState(currentStatus);
   const router = useRouter();
 
   const handleSave = async () => {
     try {
-      const res = await fetch(`/api/leaves/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status }),
+      await leaveService.editLeaveRequest({ _id: id, status });
+      await getLeaves()
+      setIsOpen(false);
+      toast.success('Status updated!', {
+        position: 'bottom-right',
       });
-
-      if (res.ok) {
-        setIsOpen(false);
-        toast.success("status updated!", {
-          position: "bottom-right"
-        });
-        router.refresh();
-      } else {
-        console.error('Failed to update leave status');
-      }
+      
     } catch (error) {
-      console.error(error);
+      console.error('Failed to update leave status', error);
+      toast.error('Failed to update status');
     }
   };
 

@@ -1,32 +1,56 @@
 const contactServiceData = () => {
     return {
-        addContact: async (newContact: any) => {
+        addContact: async (newContact:any) => {
             try {
-                await fetch('/api/contacts', {
+                const res = await fetch('/api/contacts', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(newContact),
                 });
+                if (!res.ok) {
+                    throw new Error('Failed to add contact');
+                }
+                return await res.json();
             } catch (err) {
                 console.error('Failed to save contact', err);
+                throw err;
             }
         },
-        editContact: async (newContact:any) => {
+        editContact: async (updatedContact:any) => {
             try {
-                await fetch(`/api/contacts/${newContact._id}`, {
+                const res = await fetch(`/api/contacts/${updatedContact._id}`, {
                     method: 'PUT',
                     headers: {
-                      'Content-Type': 'application/json',
+                        'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(newContact),
-                  });
+                    body: JSON.stringify(updatedContact),
+                });
+                if (!res.ok) {
+                    throw new Error('Failed to update contact');
+                }
+                return await res.json();
             } catch (err) {
-                console.error('Failed to save contact', err);
+                console.error('Failed to update contact', err);
+                throw err;
+            }
+        },
+        deleteContact: async (id: string) => {
+            try {
+                const res = await fetch(`/api/contacts/${id}`, { method: 'DELETE' });
+                console.log(res)
+                if (!res.ok) {
+                    
+                    throw new Error('Failed to delete contact');
+                }
+                
+            } catch (error) {
+                console.error('Failed to delete contact', error);
+                throw error;
             }
         }
     }
 }
 
-export const contactService = contactServiceData()
+export const contactService = contactServiceData();

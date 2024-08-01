@@ -53,6 +53,7 @@ export async function DELETE(req: Request, { params }: { params: Params }) {
   try {
     await connectMongoDB();
     const deletedLeave = await Leave.findByIdAndDelete(id);
+    console.log(deletedLeave)
     if (!deletedLeave) {
       return NextResponse.json({ message: 'Leave not found' }, { status: 404 });
     }

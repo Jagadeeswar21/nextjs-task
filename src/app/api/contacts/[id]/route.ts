@@ -10,8 +10,10 @@ export async function PUT(req:Request,{ params }: { params: Params }) {
     const { id } = params;
     try {
     const { name, email, phone, status } =await req.json();
+    console.log(name)
       await connectMongoDB();
       const updatedContact = await Contact.findByIdAndUpdate(id, { name, email, phone, status }, { new: true });
+      console.log(updatedContact)
       return NextResponse.json(updatedContact,{status:200});
     } catch (error) {
       return NextResponse.json({ message: 'Failed to update contact' },{status:500});
@@ -20,9 +22,11 @@ export async function PUT(req:Request,{ params }: { params: Params }) {
 
 export async function DELETE(req: Request, { params }: { params: Params }) {
   const { id } = params;
+  console.log(id)
   await connectMongoDB();
       try {
         const deletedContact = await Contact.findByIdAndDelete(id);
+        console.log(deletedContact)
         if (!deletedContact) {
           return NextResponse.json({ message: 'Contact not found' },{status:404});
         }

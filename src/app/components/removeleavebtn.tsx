@@ -3,35 +3,33 @@ import React from 'react';
 import { HiTrash } from 'react-icons/hi';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { leaveService } from '@/services/userleaveService';
 
 interface RemoveLeaveProps {
   id: string;
+  getLeaves:any
 }
 
-const RemoveLeave: React.FC<RemoveLeaveProps> = ({ id }) => {
+const RemoveLeave: React.FC<RemoveLeaveProps> = ({ id,getLeaves }) => {
   const router = useRouter();
 
   const handleRemove = async () => {
     try {
-      const res = await fetch(`/api/leaves/${id}`, {
-        method: 'DELETE',
+      await leaveService.deleteLeaveRequest(id);
+      toast.success("Successfully deleted!", {
+        position: "bottom-right",
       });
-
-      if (res.ok) {
-        toast.success("Successfully deleted!", {
-          position: "bottom-right",
-        });
-        router.refresh();
-      } else {
-        console.error('Failed to delete leave request');
-      }
+      getLeaves();
+      //router.refresh();
     } catch (error) {
-      console.error('Failed to delete leave request', error);
+      toast.error("Failed to delete leave request. Please try again.", {
+        position: "bottom-right",
+      });
     }
   };
 
   return (
-    <button onClick={handleRemove}>
+    <button onClick={handleRemove} className="text-red-500 hover:text-red-700 p-2">
       <HiTrash size={24} />
     </button>
   );
