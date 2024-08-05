@@ -11,10 +11,9 @@ import { leaveService } from "@/services/userleaveService";
 interface Leave {
   _id?: string;
   date: string;
-  numberofleaves: number;
   numberofdays: number;
-  startDate?: string;
-  endDate?: string;
+  startDate: string;
+  endDate: string;
   dateRange: string;
   status: "pending" | "approved" | "rejected";
   reason: string;
