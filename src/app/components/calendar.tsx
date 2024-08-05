@@ -39,50 +39,50 @@ const LeaveCalendar: React.FC<LeaveCalendarProps> = ({ statusFilter }) => {
   const [selectedEvent, setSelectedEvent] = useState<LeaveData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchLeaveData = async () => {
-      if (session) {
-        try {
-          const data = await leaveService.getCalenderLeaves();
-          const formattedEvents: any[] = [];
-          data.leaves.forEach((leave: LeaveData) => {
-            const start = new Date(leave.startDate);
-            const end = new Date(leave.endDate);
+  const fetchLeaveData = async () => {
+    if (session) {
+      try {
+        const data = await leaveService.getCalenderLeaves();
+        const formattedEvents: any[] = [];
+        data.leaves.forEach((leave: LeaveData) => {
+          const start = new Date(leave.startDate);
+          const end = new Date(leave.endDate);
 
-            if (statusFilter === "" || leave.status === statusFilter) {
-              if (leave.status === 'approved') {
-                let currentDate = start;
-                while (currentDate <= end) {
-                  formattedEvents.push({
-                    start: new Date(currentDate),
-                    end: new Date(currentDate),
-                    title: leave.user?.name,
-                    leave,
-                    allDay: true,
-                  });
-                  currentDate.setDate(currentDate.getDate() + 1);
-                }
-              } else if (leave.status === 'pending' || leave.status === 'rejected') {
+          if (statusFilter === "" || leave.status === statusFilter) {
+            if (leave.status === 'approved') {
+              let currentDate = start;
+              while (currentDate <= end) {
                 formattedEvents.push({
-                  start: new Date(leave.date),
-                  end: new Date(leave.date),
+                  start: new Date(currentDate),
+                  end: new Date(currentDate),
                   title: leave.user?.name,
                   leave,
                   allDay: true,
                 });
+                currentDate.setDate(currentDate.getDate() + 1);
               }
+            } else if (leave.status === 'pending' || leave.status === 'rejected') {
+              formattedEvents.push({
+                start: new Date(leave.date),
+                end: new Date(leave.date),
+                title: leave.user?.name,
+                leave,
+                allDay: true,
+              });
             }
-          });
+          }
+        });
 
-          setEvents(formattedEvents);
-        } catch (error) {
-          console.error('Error fetching leave data:', error);
-          toast.error('Failed to fetch leave data.', {
-            position: 'bottom-right',
-          });
-        }
+        setEvents(formattedEvents);
+      } catch (error) {
+        console.error('Error fetching leave data:', error);
+        toast.error('Failed to fetch leave data.', {
+          position: 'bottom-right',
+        });
       }
-    };
+    }
+  };
+  useEffect(() => {
     fetchLeaveData();
   }, [session, statusFilter]);
 
@@ -178,7 +178,7 @@ const LeaveCalendar: React.FC<LeaveCalendarProps> = ({ statusFilter }) => {
           {selectedEvent.status === 'pending' && <p>Reason: {selectedEvent.reason}</p>}
           <div className="flex items-center gap-6">
             <p>Status: <span style={{ color: getStatusColor(selectedEvent.status) }}>{selectedEvent.status}</span></p>
-            <EditLeaveBtn id={selectedEvent._id} currentStatus={selectedEvent.status} />
+            <EditLeaveBtn id={selectedEvent._id} currentStatus={selectedEvent.status} getLeaves={fetchLeaveData}  />
           </div>
         </Modal>
       )}

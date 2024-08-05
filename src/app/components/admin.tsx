@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -65,67 +64,66 @@ const Admin = () => {
       }
       const data = await res.json();
       setLeaves(data.leaves || []);
-      //setTotalPages(Math.ceil(data.leaves.length / leavesPerPage));
     } catch (error) {
       console.log("Error loading leave details: ", error);
     }
   };
-  console.log(getLeaves,"grt")
-  
-  useEffect(() => {
-    getLeaves()
-    
-    const fetchData = async () => {
-      try {
-        const [userResponse, leaveResponse, approvedResponse, rejectedResponse, latestResponse,dailyResponse] = await Promise.all([
-          fetch('/api/users/count'),
-          fetch('/api/leaves/count'),
-          fetch('/api/leaves/approved'),
-          fetch('/api/leaves/rejected'),
-          fetch('/api/leaves/latest?limit=5'),
-          fetch(`/api/leaves/monthly?month=${selectedMonth}&year=${selectedYear}`),
-        ]);
 
-        if (!userResponse.ok || !leaveResponse.ok || !approvedResponse.ok || !rejectedResponse.ok || !latestResponse.ok|| !dailyResponse.ok) {
-          throw new Error('Failed to fetch data');
-        }
+  const fetchData = async (month: number, year: number) => {
+    try {
+      const [userResponse, leaveResponse, approvedResponse, rejectedResponse, latestResponse, dailyResponse] = await Promise.all([
+        fetch('/api/users/count'),
+        fetch('/api/leaves/count'),
+        fetch('/api/leaves/approved'),
+        fetch('/api/leaves/rejected'),
+        fetch('/api/leaves/latest?limit=5'),
+        fetch(`/api/leaves/monthly?month=${month}&year=${year}`),
+      ]);
 
-        const userCountData = await userResponse.json();
-        const leaveCountData = await leaveResponse.json();
-        const approvedCountData = await approvedResponse.json();
-        const rejectedCountData = await rejectedResponse.json();
-        const latestLeavesData = await latestResponse.json();
-        const dailyLeavesData = await dailyResponse.json();
-
-        setUserCount(userCountData.count);
-        setTotalLeaves(leaveCountData.count);
-        setApprovedLeaves(approvedCountData.count);
-        setRejectedLeaves(rejectedCountData.count);
-        setLatestLeaves(latestLeavesData.leaves);
-        setDailyLeavesData(dailyLeavesData.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
+      if (!userResponse.ok || !leaveResponse.ok || !approvedResponse.ok || !rejectedResponse.ok || !latestResponse.ok || !dailyResponse.ok) {
+        throw new Error('Failed to fetch data');
       }
-    };
-    fetchData();
-    
+
+      const userCountData = await userResponse.json();
+      const leaveCountData = await leaveResponse.json();
+      const approvedCountData = await approvedResponse.json();
+      const rejectedCountData = await rejectedResponse.json();
+      const latestLeavesData = await latestResponse.json();
+      const dailyLeavesData = await dailyResponse.json();
+
+      setUserCount(userCountData.count);
+      setTotalLeaves(leaveCountData.count);
+      setApprovedLeaves(approvedCountData.count);
+      setRejectedLeaves(rejectedCountData.count);
+      setLatestLeaves(latestLeavesData.leaves);
+      setDailyLeavesData(dailyLeavesData.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    getLeaves();
+    fetchData(selectedMonth, selectedYear);
   }, [selectedMonth, selectedYear]);
+
   const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
-  
-    const CustomTooltip = ({ active, payload }: any) => {
-      if (active && payload && payload.length) {
-        const date = new Date(selectedYear, selectedMonth - 1, payload[0].payload.day);
-        const formattedDate = `${date.getDate()} ${monthNames[date.getMonth()]}`;
-        return (
-          <div className="custom-tooltip">
-            <p className="label">{`${formattedDate}`}</p>
-            <p className="intro">{`${payload[0].value} Leaves`}</p>
-          </div>
-        );
-      }
-      return null;
-    };
+
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      const date = new Date(selectedYear, selectedMonth - 1, payload[0].payload.day);
+      const formattedDate = `${date.getDate()} ${monthNames[date.getMonth()]}`;
+      return (
+        <div className="custom-tooltip">
+          <p className="label">{`${formattedDate}`}</p>
+          <p className="intro">{`${payload[0].value} Leaves`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
@@ -184,8 +182,8 @@ const Admin = () => {
                   <td className="py-2 px-4 border-b">{leave.reason}</td>
                   <td className="py-2 px-4 border-b">
                     <div className="flex gap-2">
-                      <RemoveLeave id={leave._id} getLeaves={getLeaves} />
-                      <EditLeaveBtn id={leave._id} currentStatus={leave.status} getLeaves={getLeaves}  />
+                      <RemoveLeave id={leave._id} getLeaves={fetchData} />
+                      <EditLeaveBtn id={leave._id} currentStatus={leave.status} getLeaves={fetchData}  />
                     </div>
                   </td>
                 </tr>

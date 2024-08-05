@@ -49,7 +49,27 @@ const contactServiceData = () => {
                 console.error('Failed to delete contact', error);
                 throw error;
             }
-        }
+        },
+        shareContact: async (contactId: string, receiverEmail: string) => {
+            try {
+              const response = await fetch('/api/contacts/share', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contactId, receiverEmail }),
+              });
+        
+              const data = await response.json();
+        
+              if (response.ok) {
+                return { success: true, data };
+              } else {
+                return { success: false, message: data.message || 'Failed to share contact' };
+              }
+            } catch (error) {
+              console.error('Error sharing contact:', error);
+              return { success: false, message: 'An error occurred while sharing the contact' };
+            }
+          },
     }
 }
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
+import { contactService } from '@/services/contactService';
 
 interface ShareContactProps {
   contactId: string;
@@ -10,24 +11,12 @@ const ShareContact: React.FC<ShareContactProps> = ({ contactId, onClose }) => {
   const [email, setEmail] = useState('');
 
   const handleShare = async () => {
-    try {
-      const response = await fetch('/api/contacts/share', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contactId, receiverEmail: email }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        toast.success('Contact shared successfully');
-        onClose();
-      } else {
-        toast.error(data.message || 'Failed to share contact');
-      }
-    } catch (error) {
-      console.error('Error sharing contact:', error);
-      toast.error('An error occurred while sharing the contact');
+    const res = await contactService.shareContact(contactId, email);
+    if (res.success) {
+      toast.success('Contact shared successfully');
+      onClose();
+    } else {
+      toast.error(res.message);
     }
   };
 
