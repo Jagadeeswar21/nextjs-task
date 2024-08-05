@@ -1,6 +1,8 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 interface Contact {
   _id?: string;
@@ -18,19 +20,37 @@ interface ContactFormProps {
   onSave: (contact: Contact) => void;
 }
 
+const validationSchema = Yup.object({
+  name: Yup.string().required('Name is required'),
+  email: Yup.string().email('Email is invalid').required('Email is required'),
+  phone: Yup.string().matches(/^\d{10}$/, 'Phone number must be 10 digits').required('Phone is required'),
+  status: Yup.string().oneOf(['active', 'inactive'], 'Invalid status').required('Status is required'),
+});
+
 const ContactForm: React.FC<ContactFormProps> = ({ contact, onClose, onSave }) => {
   const { data: session } = useSession();
-  const [formData, setFormData] = useState({
-    
-    name: '',
-    email: '',
-    phone: '',
-    status: 'active' as 'active' | 'inactive',
+
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      email: '',
+      phone: '',
+      status: 'active' as 'active' | 'inactive',
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      const newContact: Contact = {
+        ...values,
+        _id: contact?._id,
+        createdBy: contact?.sharedBy ? contact.sharedBy : session?.user?.id,
+      };
+      onSave(newContact);
+    },
   });
 
   useEffect(() => {
     if (contact) {
-      setFormData({
+      formik.setValues({
         name: contact.name,
         email: contact.email,
         phone: contact.phone,
@@ -39,61 +59,58 @@ const ContactForm: React.FC<ContactFormProps> = ({ contact, onClose, onSave }) =
     }
   }, [contact]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: name === 'status' ? (value as 'active' | 'inactive') : value
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newContact: Contact = {
-      ...formData,
-      _id: contact?._id,
-      createdBy: contact?.sharedBy ? contact.sharedBy : session?.user?.id,
-    };
-    onSave(newContact);
-  };
-
-
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg">
         <h2 className="text-xl font-bold mb-4">{contact ? 'Edit Contact' : 'Create New Contact'}</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Name"
-            className="border rounded px-3 py-2"
-            required
-          />
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Email"
-            className="border rounded px-3 py-2"
-            required
-          />
-          <input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            placeholder="Phone"
-            className="border rounded px-3 py-2"
-            required
-          />
+        <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
+          <div>
+            <input
+              type="text"
+              name="name"
+              value={formik.values.name}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              placeholder="Name"
+              className="border rounded px-3 py-2 w-full"
+            />
+            {formik.touched.name && formik.errors.name ? (
+              <p className="text-red-500 text-sm mt-1">{formik.errors.name}</p>
+            ) : null}
+          </div>
+          <div>
+            <input
+              type="email"
+              name="email"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              placeholder="Email"
+              className="border rounded px-3 py-2 w-full"
+            />
+            {formik.touched.email && formik.errors.email ? (
+              <p className="text-red-500 text-sm mt-1">{formik.errors.email}</p>
+            ) : null}
+          </div>
+          <div>
+            <input
+              type="text"
+              name="phone"
+              value={formik.values.phone}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              placeholder="Phone"
+              className="border rounded px-3 py-2 w-full"
+            />
+            {formik.touched.phone && formik.errors.phone ? (
+              <p className="text-red-500 text-sm mt-1">{formik.errors.phone}</p>
+            ) : null}
+          </div>
           <select
             name="status"
-            value={formData.status}
-            onChange={handleChange}
+            value={formik.values.status}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
             className="border rounded px-3 py-2"
           >
             <option value="active">Active</option>
