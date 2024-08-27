@@ -1,12 +1,16 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { HiPencilAlt, HiTrash } from "react-icons/hi";
+import * as React from "react";
+import { HiPencilAlt, HiTrash ,HiDotsHorizontal} from "react-icons/hi";
 import LeaveForm from "./LeaveForm";
-import RemoveLeave from "./RemoveLeave";
-import Pagination from "./pagination";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext } from "@/components/ui/pagination";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { leaveService } from "@/services/userleaveService";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 interface Leave {
   _id?: string;
@@ -28,14 +32,12 @@ const LeavesPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [statusFilter, setStatusFilter] = useState<string>("");
-  const leavesPerPage = 5;
+  const leavesPerPage = 2;
 
   const fetchLeaves = async (page: number) => {
     if (!session) return;
     try {
-      const res = await fetch(
-        `/api/leaves?page=${page}&limit=${leavesPerPage}`
-      );
+      const res = await fetch(`/api/leaves?page=${page}&limit=${leavesPerPage}`);
       const data = await res.json();
       setLeaves(data.leaves || []);
       setTotalPages(data.totalPages || 1);
@@ -64,9 +66,7 @@ const LeavesPage: React.FC = () => {
             leave._id === newLeave._id ? newLeave : leave
           )
         );
-        toast.success("Successfully edited!", {
-          position: "bottom-right",
-        });
+        toast.success("Successfully edited!", { position: "bottom-right" });
       } else {
         await leaveService.addLeaveRequest(newLeave);
         fetchLeaves(currentPage);
@@ -87,26 +87,18 @@ const LeavesPage: React.FC = () => {
     setCurrentPage(page);
   };
 
-  const handleStatusFilterChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const filterValue = e.target.value;
-    setStatusFilter(filterValue);
-    if (filterValue === "") {
+  const handleStatusFilterChange = (status: string) => {
+    setStatusFilter(status);
+    if (status === "") {
       setTotalPages(Math.ceil(leaves.length / leavesPerPage));
     } else {
-      const filteredLeaves = leaves.filter(
-        (leave) => leave.status === filterValue
-      );
+      const filteredLeaves = leaves.filter((leave) => leave.status === status);
       setTotalPages(Math.ceil(filteredLeaves.length / leavesPerPage));
     }
     setCurrentPage(1);
   };
 
-  const filteredLeaves =
-    statusFilter === ""
-      ? leaves
-      : leaves.filter((leave) => leave.status === statusFilter);
+  const filteredLeaves = statusFilter === "" ? leaves : leaves.filter((leave) => leave.status === statusFilter);
 
   if (status === "loading") return <p>Loading...</p>;
 
@@ -119,82 +111,94 @@ const LeavesPage: React.FC = () => {
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Leaves</h1>
         <div className="flex items-center">
-          <button
-            onClick={() => setShowForm(true)}
-            className="bg-blue-500 text-white px-3 text-sm py-2 rounded"
-          >
-            Request leave
-          </button>
-          <select
-            id="statusFilter"
-            value={statusFilter}
-            onChange={handleStatusFilterChange}
-            className="p-2 border border-gray-400 rounded bg-white w-fit ml-2"
-          >
-            <option value="">All</option>
-            <option value="approved">Approved</option>
-            <option value="pending">Pending</option>
-            <option value="rejected">Rejected</option>
-          </select>
+          <Button onClick={() => setShowForm(true)}>Request Leave</Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-2">
+                Filter by Status
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onSelect={() => handleStatusFilterChange("")}>
+                All
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleStatusFilterChange("approved")}>
+                Approved
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleStatusFilterChange("pending")}>
+                Pending
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleStatusFilterChange("rejected")}>
+                Rejected
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       <div className="bg-white p-[15px] rounded shadow-lg">
-        <table className="min-w-full border-collapse border border-gray-400 leading-normal">
-          <thead>
-            <tr>
-              <th className="border w-[8%] border-gray-400 p-1">Date</th>
-              <th className="border w-[8%] border-gray-400 p-1">
-                Number of Days
-              </th>
-              <th className="border w-[16%] border-gray-400 p-1">Date Range</th>
-              <th className="border w-[8%] border-gray-400 p-1">Status</th>
-              <th className="border w-[20%] border-gray-400 p-1">Reason</th>
-              <th className="border w-[8%] border-gray-400 p-1">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Date</TableHead>
+              <TableHead>Number of Days</TableHead>
+              <TableHead>Date Range</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Reason</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {filteredLeaves.map((leave) => (
-              <tr key={leave._id}>
-                <td className="border border-gray-400 p-1">
-                  {new Date(leave.date).toLocaleDateString()}
-                </td>
-                <td className="border border-gray-400 p-1">
-                  {leave.numberofdays}
-                </td>
-                <td className="border border-gray-400 p-1">
-                  {leave.dateRange}
-                </td>
-                <td className="border border-gray-400 p-1">{leave.status}</td>
-                <td className="border border-gray-400 p-1">
-                  <p className="">{leave.reason}</p>
-                </td>
-                <td className="border border-gray-400 p-1">
-                  <button
-                    onClick={() => handleEdit(leave)}
-                    className="text-blue-500 hover:text-blue-700 p-2"
-                  >
-                    <HiPencilAlt />
-                  </button>
-                  {/* <RemoveLeave id={leave._id!} onDelete={() => handleDelete(leave._id!)} /> */}
-                  <button
-                    onClick={() => handleDelete(leave._id!)}
-                    className="text-red-500 hover:text-red-700 p-2"
-                  >
-                    <HiTrash />
-                  </button>
-                </td>
-              </tr>
+              <TableRow key={leave._id}>
+                <TableCell>{new Date(leave.date).toLocaleDateString()}</TableCell>
+                <TableCell>{leave.numberofdays}</TableCell>
+                <TableCell>{leave.dateRange}</TableCell>
+                <TableCell>{leave.status}</TableCell>
+                <TableCell>{leave.reason}</TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="icon">
+                        <HiDotsHorizontal />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem onSelect={() => handleEdit(leave)}>
+                        <HiPencilAlt className="mr-2" /> Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => handleDelete(leave._id!)}>
+                        <HiTrash className="mr-2" /> Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
-
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
-
+      <Pagination className="mt-4">
+        <PaginationContent>
+          <PaginationPrevious
+            onClick={currentPage === 1 ? undefined : () => handlePageChange(currentPage - 1)}
+            className={cn({ "pointer-events-none opacity-50": currentPage === 1 })}
+          />
+          {Array.from({ length: totalPages }).map((_, index) => (
+            <PaginationItem key={index}>
+              <PaginationLink
+                isActive={currentPage === index + 1}
+                onClick={() => handlePageChange(index + 1)}
+              >
+                {index + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+          <PaginationNext
+            onClick={currentPage === totalPages ? undefined : () => handlePageChange(currentPage + 1)}
+            className={cn({ "pointer-events-none opacity-50": currentPage === totalPages })}
+          />
+        </PaginationContent>
+      </Pagination>
       {showForm && (
         <LeaveForm
           leave={editingLeave}

@@ -26,7 +26,7 @@ export default function LeaveList({ role }: LeaveListProps) {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [view, setView] = useState<"list" | "calendar">("list");
-  const leavesPerPage = 7;
+  const leavesPerPage = 2;
 
   const getLeaves = async () => {
     try {

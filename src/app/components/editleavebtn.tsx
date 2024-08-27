@@ -32,7 +32,7 @@ const EditLeaveBtn: React.FC<EditLeaveBtnProps> = ({ id, currentStatus, getLeave
   return (
     <>
       <button onClick={() => setIsOpen(!isOpen)}>
-        <HiPencilAlt size={24} className="text-blue-500 hover:text-blue-700" />
+        <HiPencilAlt size={24} className="text-gray-500 hover:text-gray-700" />
       </button>
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -76,7 +76,7 @@ const EditLeaveBtn: React.FC<EditLeaveBtnProps> = ({ id, currentStatus, getLeave
             <div className="mt-4 flex gap-2">
               <button
                 onClick={handleSave}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
               >
                 Save
               </button>
