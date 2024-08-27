@@ -2,26 +2,32 @@
 import React from 'react';
 import { HiTrash } from 'react-icons/hi';
 import toast from 'react-hot-toast';
-import { userService } from '@/services/userService';
-
 interface RemoveBtnProps {
   id: string;
-  getUsers: () => void;
+  getUsers:any;
 }
-
-const RemoveBtn: React.FC<RemoveBtnProps> = ({ id, getUsers }) => {
+const RemoveBtn: React.FC<RemoveBtnProps> = ({ id ,getUsers}) => {
+ 
   const handleRemove = async () => {
     try {
-      await userService.editUserStatus(id,"inactive",true);
-      toast.success("Successfully deleted!", {
-        position: "bottom-right"
+      const res = await fetch(`/api/users/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body:JSON.stringify({status:"inactive",isDeleted:true})
       });
-      getUsers();
+
+      if (res.ok) {
+        toast.success("successfully deleted!",{
+          position:"bottom-right"
+        });
+        getUsers()
+      } else {
+        console.error('Failed to update user status');
+      }
     } catch (error) {
-      console.error('Failed to update user status:', error);
-      toast.error('Failed to delete user', {
-        position: "bottom-right"
-      });
+      console.error( error)
     }
   };
 

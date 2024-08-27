@@ -1,18 +1,15 @@
 'use client';
 import React from 'react';
 import { HiTrash } from 'react-icons/hi';
-import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { leaveService } from '@/services/userleaveService';
 
 interface RemoveLeaveProps {
   id: string;
-  getLeaves:any
+  getLeaves: any
 }
 
-const RemoveLeave: React.FC<RemoveLeaveProps> = ({ id,getLeaves }) => {
-  const router = useRouter();
-
+const RemoveLeave: React.FC<RemoveLeaveProps> = ({ id, getLeaves }) => {
   const handleRemove = async () => {
     try {
       await leaveService.deleteLeaveRequest(id);
@@ -20,7 +17,6 @@ const RemoveLeave: React.FC<RemoveLeaveProps> = ({ id,getLeaves }) => {
         position: "bottom-right",
       });
       getLeaves();
-      //router.refresh();
     } catch (error) {
       toast.error("Failed to delete leave request. Please try again.", {
         position: "bottom-right",

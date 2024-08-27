@@ -31,7 +31,7 @@ const UserList = ({ role }: UserListProps) => {
 
   useEffect(() => {
     getUsers();
-  }, []);
+  }, []);   
 
   const filteredUsers = users?.filter((user) =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -40,7 +40,7 @@ const UserList = ({ role }: UserListProps) => {
   return (
     <div className="p-4">
       <div className="flex items-center mb-4">
-        <h2 className="text-xl font-semibold">Users List</h2>
+        <h2 className="text-xl font-semibold">Users List({filteredUsers.length})</h2>
         <div className="ml-auto relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <HiSearch className="h-5 w-5 text-gray-400" />

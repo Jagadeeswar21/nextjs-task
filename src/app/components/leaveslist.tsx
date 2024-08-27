@@ -5,7 +5,7 @@ import RemoveLeave from "./removeleavebtn";
 import Pagination from "./pagination";
 import LeaveCalendar from "@/app/components/calendar";
 import { FaCalendarAlt, FaList } from "react-icons/fa";
-import { leaveService } from "@/services/userleaveService";
+import { leaveService } from "@/services/userleaveService"; 
 
 interface LeaveListProps {
   role: string;
@@ -14,10 +14,7 @@ interface LeaveListProps {
 export interface Leave {
   _id: string;
   date: string;
-  numberofleaves: number;
   numberofdays: number;
-  startDate: string;
-  endDate: string;
   dateRange: string;
   status: string;
   reason: string;
@@ -34,35 +31,25 @@ export default function LeaveList({ role }: LeaveListProps) {
   const getLeaves = async () => {
     try {
       const data = await leaveService.getLeaves();
-      console.log(data)
+      console.log("Fetched leaves:", data);
       setLeaves(data.leaves || []);
       setTotalPages(Math.ceil(data.leaves.length / leavesPerPage));
     } catch (error) {
-      console.log("Error loading leave details: ", error);
+      console.error("Error loading leave details: ", error);
     }
   };
 
   useEffect(() => {
-    getLeaves();
+    getLeaves(); 
   }, []);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  const handleStatusFilterChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
+  const handleStatusFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const filterValue = e.target.value;
     setStatusFilter(filterValue);
-    if (filterValue === "") {
-      setTotalPages(Math.ceil(leaves.length / leavesPerPage));
-    } else {
-      const filteredLeaves = leaves.filter(
-        (leave) => leave.status === filterValue
-      );
-      setTotalPages(Math.ceil(filteredLeaves.length / leavesPerPage));
-    }
     setCurrentPage(1);
   };
 
@@ -71,10 +58,14 @@ export default function LeaveList({ role }: LeaveListProps) {
       ? leaves
       : leaves.filter((leave) => leave.status === statusFilter);
 
+  useEffect(() => {
+    setTotalPages(Math.ceil(filteredLeaves.length / leavesPerPage));
+  }, [filteredLeaves]);
+
   return (
     <div className="p-4">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-xl font-bold">Leave List</h2>
+        <h2 className="text-xl font-bold">Leave List ({filteredLeaves.length})</h2>
         <div className="flex items-center">
           <button
             onClick={() => setView("list")}
@@ -163,7 +154,7 @@ export default function LeaveList({ role }: LeaveListProps) {
                     {(role === "admin" || role === "manager") && (
                       <td className="border border-[#eaedf1] px-20">
                         <div className="flex gap-2">
-                          {role === "admin" && <RemoveLeave id={leave._id}  getLeaves={getLeaves} />}
+                          {role === "admin" && <RemoveLeave id={leave._id} getLeaves={getLeaves} />}
                           <EditLeaveBtn
                             id={leave._id}
                             currentStatus={leave.status}
