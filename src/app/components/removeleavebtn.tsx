@@ -29,7 +29,7 @@ const RemoveLeave: React.FC<RemoveLeaveProps> = ({ id,getLeaves }) => {
   };
 
   return (
-    <button onClick={handleRemove} className="text-red-500 hover:text-red-700 p-2">
+    <button onClick={handleRemove} className="text-black p-2">
       <HiTrash size={24} />
     </button>
   );
