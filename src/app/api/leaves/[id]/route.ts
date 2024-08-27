@@ -30,9 +30,9 @@ export async function GET(req: Request, { params }: { params: Params }) {
 export async function PUT(req: Request, { params }: { params: Params }) {
   const { id } = params;
   try {
-    const { date, numberofleaves, numberofdays, dateRange, status, reason } = await req.json();
+    const { date, numberofdays, dateRange, status, reason } = await req.json();
     await connectMongoDB();
-    const updatedLeave = await Leave.findByIdAndUpdate(id, { date, numberofleaves, numberofdays, dateRange, status, reason }, { new: true });
+    const updatedLeave = await Leave.findByIdAndUpdate(id, { date, numberofdays, dateRange, status, reason }, { new: true });
     console.log(updatedLeave)
     if (!updatedLeave) {
       return NextResponse.json({ message: 'Leave not found' }, { status: 404 });

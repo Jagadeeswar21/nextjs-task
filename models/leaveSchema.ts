@@ -19,10 +19,6 @@ const leaveSchema: Schema = new Schema(
       type: Date,
       required: true,
     },
-    numberofleaves: {
-      type: Number,
-      required: true,
-    },
     numberofdays: {
       type: Number,
       required: true,

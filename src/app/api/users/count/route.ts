@@ -6,10 +6,11 @@ import { NextResponse } from 'next/server';
 export async function GET() {
   await connectMongoDB();
   try {
-    const userCount = await User.countDocuments();
+    const userCount = await User.countDocuments({isDeleted:false});
     return NextResponse.json({ count: userCount });
   } catch (error) {
     console.error('Error fetching user count:', error);
     return NextResponse.json({ message: 'Failed to fetch user count' }, { status: 500 });
   }
 }
+   

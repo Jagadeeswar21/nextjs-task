@@ -36,13 +36,12 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { date, numberofleaves, numberofdays, dateRange, status, reason } = await req.json();
+    const { date, numberofdays, dateRange, status, reason } = await req.json();
     await connectMongoDB();
     const currentUser = await getUser(req);
     const newLeave = await Leave.create({
       user: currentUser?.sub,
       date,
-      numberofleaves,
       numberofdays,
       dateRange,
       status,

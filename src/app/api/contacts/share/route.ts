@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
     const contact = await Contact.findById(contactId);
     if (!contact) {
-      return NextResponse.json({ message: 'Contact not found' }, { status: 404 });
+      return NextResponse.json({ message: 'Contact already exists' }, { status: 404 });
     }
 
     const sharedContact = await SharedContact.findOne({
