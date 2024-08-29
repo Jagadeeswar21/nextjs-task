@@ -26,9 +26,8 @@ const Adminsidebar: React.FC = () => {
           <Link
             key={link.href}
             href={link.href}
-            className={`py-3 px-3 flex flex-col items-center rounded text-lg text-sm ${
-              activeLink === link.href ? 'bg-black text-white' : 'hover:bg-black hover:text-white'
-            }`} 
+            className={`py-3 px-3 flex flex-col items-center rounded text-lg text-sm ${activeLink === link.href ? 'bg-black text-white' : 'hover:bg-black hover:text-white'
+              }`}
             onClick={() => setActiveLink(link.href)}
           >
             <link.icon className="mb-2 text-xl" />

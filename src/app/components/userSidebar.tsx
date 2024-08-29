@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FaHome, FaClipboardList } from 'react-icons/fa';
+import { FaHome, FaClipboardList, FaBook,FaShoppingCart } from 'react-icons/fa';
 import { RiContactsBook3Fill } from "react-icons/ri";
 
 const Sidebar: React.FC = () => {
@@ -12,6 +12,8 @@ const Sidebar: React.FC = () => {
     { href: '/dashboard/homePage', icon: FaHome, label: 'Home' },
     { href: '/dashboard/contacts', icon: RiContactsBook3Fill, label: 'Contacts' },
     { href: '/dashboard/leaves', icon: FaClipboardList, label: 'Leaves' },
+    { href: '/dashboard/books', icon: FaBook, label: 'Books' },
+    { href: '/dashboard/orders', icon: FaShoppingCart, label: 'Orders' },
   ];
 
   return (

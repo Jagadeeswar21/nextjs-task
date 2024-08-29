@@ -1,8 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import { HiPencilAlt, HiSearch, HiShare, HiTrash,HiDotsHorizontal } from 'react-icons/hi';
+import { HiPencilAlt, HiSearch, HiShare, HiTrash, HiDotsHorizontal } from 'react-icons/hi';
 import ContactForm from './contactForm';
-import RemoveContact from './removeContact';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis } from "@/components/ui/pagination";
 import toast from 'react-hot-toast';
 import { useSession } from 'next-auth/react';
@@ -126,19 +125,19 @@ const ContactsPage: React.FC = () => {
   return (
     <div className="p-4">
       <div className="mb-4 flex items-center gap-3">
-      <h1 className="text-2xl font-bold">Contacts</h1>
-      <div className="ml-auto relative w-64">
-  <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-    <HiSearch className="text-gray-400 text-sm" />
-  </div>
-  <input
-    type="text"
-    placeholder="Search by name"
-    value={searchTerm}
-    onChange={(e) => setSearchTerm(e.target.value)}
-    className="p-1 pl-8 text-sm rounded-md border border-gray-400 focus:outline-none focus:ring focus:border-blue-300 bg-white w-full"
-  />
-</div><nav></nav>
+        <h1 className="text-2xl font-bold">Contacts</h1>
+        <div className="ml-auto relative w-64">
+          <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
+            <HiSearch className="text-gray-400 text-sm" />
+          </div>
+          <input
+            type="text"
+            placeholder="Search by name"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="p-1 pl-8 text-sm rounded-md border border-gray-400 focus:outline-none focus:ring focus:border-blue-300 bg-white w-full"
+          />
+        </div><nav></nav>
         <Button onClick={() => setShowForm(true)} variant="default">Create New Contact</Button>
       </div>
 
@@ -153,7 +152,7 @@ const ContactsPage: React.FC = () => {
               <TableHead >Actions</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody className="text-left">
             {filteredContacts.map(contact => (
               <TableRow key={contact._id}>
                 <TableCell >{contact.name}</TableCell>

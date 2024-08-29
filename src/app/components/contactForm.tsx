@@ -1,8 +1,17 @@
-'use client'
 import React, { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetFooter,
+  SheetTitle,
+  SheetDescription,
+  SheetClose,
+} from "@/components/ui/sheet";
+import { Button } from '@/components/ui/button';
 
 interface Contact {
   _id?: string;
@@ -60,9 +69,14 @@ const ContactForm: React.FC<ContactFormProps> = ({ contact, onClose, onSave }) =
   }, [contact]);
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-xl font-bold mb-4">{contact ? 'Edit Contact' : 'Create New Contact'}</h2>
+    <Sheet open={true}>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>{contact ? 'Edit Contact' : 'Create New Contact'}</SheetTitle>
+          <SheetDescription>
+            {contact ? 'Update the contact details below.' : 'Fill in the details to create a new contact.'}
+          </SheetDescription>
+        </SheetHeader>
         <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
           <div>
             <input
@@ -116,17 +130,18 @@ const ContactForm: React.FC<ContactFormProps> = ({ contact, onClose, onSave }) =
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
           </select>
-          <div className="flex justify-end gap-4">
-            <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-400 text-white rounded">
+          <SheetFooter>
+            <Button type="button" onClick={onClose} className="px-4 py-2  text-white rounded">
               Cancel
-            </button>
-            <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">
+            </Button>
+            <Button type="submit" className="px-4 py-2 text-white rounded">
               Save
-            </button>
-          </div>
+            </Button>
+          </SheetFooter>
         </form>
-      </div>
-    </div>
+        <SheetClose />
+      </SheetContent>
+    </Sheet>
   );
 };
 
