@@ -48,7 +48,7 @@ const s3Client = new S3Client({
         Key: `Books/${fileName}`,
     };
     const command = new GetObjectCommand(params);
-    const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 }); 
+    const url = await getSignedUrl(s3Client, command); 
     return url;
 }
 
