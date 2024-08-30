@@ -9,7 +9,12 @@ import { contactService } from '@/services/contactService';
 import ShareContact from './shareContact';
 import { Button } from '@/components/ui/button';
 import { cn } from "@/lib/utils";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableHeader,
@@ -18,14 +23,14 @@ import {
   TableHead,
   TableRow,
   TableCell,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 
 interface Contact {
   _id?: string;
   name: string;
   email: string;
   phone: string;
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
   sharedBy?: string;
 }
 
@@ -33,7 +38,7 @@ const ContactsPage: React.FC = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const [showForm, setShowForm] = useState<boolean>(false);
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const { data: session, status } = useSession();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -44,12 +49,14 @@ const ContactsPage: React.FC = () => {
   const fetchContacts = async (page: number) => {
     if (!session) return;
     try {
-      const res = await fetch(`/api/contacts?page=${page}&limit=${contactsPerPage}`);
+      const res = await fetch(
+        `/api/contacts?page=${page}&limit=${contactsPerPage}`
+      );
       const data = await res.json();
       setContacts(data.contacts || []);
       setTotalPages(data.totalPages || 1);
     } catch (error) {
-      console.error('Failed to fetch contacts', error);
+      console.error("Failed to fetch contacts", error);
     }
   };
 
@@ -68,25 +75,25 @@ const ContactsPage: React.FC = () => {
     try {
       if (editingContact && editingContact._id) {
         await contactService.editContact(newContact);
-        setContacts(prevContacts =>
-          prevContacts.map(contact =>
+        setContacts((prevContacts) =>
+          prevContacts.map((contact) =>
             contact._id === editingContact._id ? newContact : contact
           )
         );
         toast.success("Successfully edited!", {
-          position: "bottom-right"
+          position: "bottom-right",
         });
       } else {
         const res = await contactService.addContact(newContact);
         toast.success("Successfully added!", {
-          position: "bottom-right"
+          position: "bottom-right",
         });
         fetchContacts(currentPage);
       }
     } catch (error) {
-      console.error('Failed to save contact', error);
-      toast.error('Failed to save contact', {
-        position: "bottom-right"
+      console.error("Failed to save contact", error);
+      toast.error("Failed to save contact", {
+        position: "bottom-right",
       });
     } finally {
       setShowForm(false);
@@ -96,14 +103,14 @@ const ContactsPage: React.FC = () => {
   const handleDelete = async (id: string) => {
     try {
       await contactService.deleteContact(id);
-      setContacts(contacts.filter(contact => contact._id !== id));
+      setContacts(contacts.filter((contact) => contact._id !== id));
       toast.success("Successfully deleted!", {
-        position: "bottom-right"
+        position: "bottom-right",
       });
     } catch (error) {
-      console.error('Failed to delete contact', error);
-      toast.error('Failed to delete contact', {
-        position: "bottom-right"
+      console.error("Failed to delete contact", error);
+      toast.error("Failed to delete contact", {
+        position: "bottom-right",
       });
     }
   };
@@ -112,13 +119,13 @@ const ContactsPage: React.FC = () => {
     setCurrentPage(page);
   };
 
-  const filteredContacts = contacts.filter(contact =>
+  const filteredContacts = contacts.filter((contact) =>
     contact.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (status === 'loading') return <p>Loading...</p>;
+  if (status === "loading") return <p>Loading...</p>;
 
-  if (status === 'unauthenticated') {
+  if (status === "unauthenticated") {
     return <p>Please log in to view your contacts.</p>;
   }
 
@@ -142,23 +149,23 @@ const ContactsPage: React.FC = () => {
       </div>
 
       <div className="bg-white p-[15px] rounded shadow-lg">
-        <Table >
+        <Table>
           <TableHeader>
             <TableRow>
-              <TableHead >Name</TableHead>
-              <TableHead >Email</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
-              <TableHead >Status</TableHead>
-              <TableHead >Actions</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="text-left">
             {filteredContacts.map(contact => (
               <TableRow key={contact._id}>
-                <TableCell >{contact.name}</TableCell>
-                <TableCell >{contact.email}</TableCell>
-                <TableCell >{contact.phone}</TableCell>
-                <TableCell >{contact.status}</TableCell>
+                <TableCell>{contact.name}</TableCell>
+                <TableCell>{contact.email}</TableCell>
+                <TableCell>{contact.phone}</TableCell>
+                <TableCell>{contact.status}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -170,10 +177,14 @@ const ContactsPage: React.FC = () => {
                       <DropdownMenuItem onSelect={() => handleEdit(contact)}>
                         <HiPencilAlt className="mr-2" /> Edit
                       </DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => handleDelete(contact._id!)}>
+                      <DropdownMenuItem
+                        onSelect={() => handleDelete(contact._id!)}
+                      >
                         <HiTrash className="mr-2" /> Delete
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setShareContactId(contact._id || '')}>
+                      <DropdownMenuItem
+                        onClick={() => setShareContactId(contact._id || "")}
+                      >
                         <HiShare className="mr-2" /> share
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -188,8 +199,14 @@ const ContactsPage: React.FC = () => {
       <Pagination className="mt-4">
         <PaginationContent>
           <PaginationPrevious
-            onClick={currentPage === 1 ? undefined : () => handlePageChange(currentPage - 1)}
-            className={cn({ "pointer-events-none opacity-50": currentPage === 1 })}
+            onClick={
+              currentPage === 1
+                ? undefined
+                : () => handlePageChange(currentPage - 1)
+            }
+            className={cn({
+              "pointer-events-none opacity-50": currentPage === 1,
+            })}
           />
           {Array.from({ length: totalPages }).map((_, index) => (
             <PaginationItem key={index}>
@@ -202,8 +219,14 @@ const ContactsPage: React.FC = () => {
             </PaginationItem>
           ))}
           <PaginationNext
-            onClick={currentPage === totalPages ? undefined : () => handlePageChange(currentPage + 1)}
-            className={cn({ "pointer-events-none opacity-50": currentPage === totalPages })}
+            onClick={
+              currentPage === totalPages
+                ? undefined
+                : () => handlePageChange(currentPage + 1)
+            }
+            className={cn({
+              "pointer-events-none opacity-50": currentPage === totalPages,
+            })}
           />
         </PaginationContent>
       </Pagination>
