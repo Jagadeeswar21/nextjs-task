@@ -1,20 +1,19 @@
+// pages/checkout.tsx
+
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {
-  useStripe,
-  useElements,
-  PaymentElement,
-} from "@stripe/react-stripe-js";
+import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import convertToSubcurrency from "@/lib/convertToSubcurrency";
 import { useRouter } from "next/navigation";
 
-const CheckoutPage = ({ amount }: { amount: number }) => {
+const CheckoutPage = ({ amount, bookId }: { amount: number; bookId: string }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [errorMessage, setErrorMessage] = useState<string>();
   const [clientSecret, setClientSecret] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     fetch("/api/create-payment-intent", {
@@ -33,6 +32,7 @@ const CheckoutPage = ({ amount }: { amount: number }) => {
     setLoading(true);
 
     if (!stripe || !elements) {
+      setLoading(false);
       return;
     }
 
@@ -44,22 +44,41 @@ const CheckoutPage = ({ amount }: { amount: number }) => {
       return;
     }
 
-    const { error } = await stripe.confirmPayment({
+    const { paymentIntent, error } = await stripe.confirmPayment({
       elements,
       clientSecret,
       confirmParams: {
-        return_url: `http://www.localhost:3000/paymentSuccess?amount=${amount}`,
+        return_url: window.location.href,
       },
+      redirect: "if_required",
     });
 
     if (error) {
-      // This point is only reached if there's an immediate error when
-      // confirming the payment. Show the error to your customer (for example, payment details incomplete)
       setErrorMessage(error.message);
-    } else {
-      // The payment UI automatically closes with a success animation.
-      // Your customer is redirected to your `return_url`.
-      
+    } else if (paymentIntent) {
+      try {
+        const response = await fetch("/api/orders", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            bookId,
+            amount,
+            paymentId: paymentIntent.id,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to store order information");
+        }
+
+        // Redirect to the success page
+        router.push(`/paymentSuccess?amount=${amount}`);
+      } catch (error) {
+        setErrorMessage("Error storing order information");
+        console.error(error);
+      }
     }
 
     setLoading(false);
@@ -81,19 +100,19 @@ const CheckoutPage = ({ amount }: { amount: number }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-2 rounded-md">
-      {clientSecret && <PaymentElement />}
+    <div className="bg-white p-2 rounded-md">
+      <form onSubmit={handleSubmit}>
+        {clientSecret && <PaymentElement />}
+        {errorMessage && <div className="text-red-500 mt-2">{errorMessage}</div>}
 
-      {errorMessage && <div>{errorMessage}</div>}
-
-      <button
-        disabled={!stripe || loading}
-        className="text-white w-full p-3 bg-black mt-2 flex items-center justify-center rounded-md font-semibold text-lg disabled:opacity-50 disabled:animate-pulse"
-
-      >
-        {!loading ? `Pay $${amount}` : "Processing..."}
-      </button>
-    </form>
+        <button
+          disabled={!stripe || loading}
+          className="text-white w-full p-3 bg-black mt-2 flex items-center justify-center rounded-md font-semibold text-lg disabled:opacity-50 disabled:animate-pulse"
+        >
+          {!loading ? `Pay $${amount}` : "Processing..."}
+        </button>
+      </form>
+    </div>
   );
 };
 

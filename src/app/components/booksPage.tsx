@@ -18,7 +18,7 @@ const BookPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedBook, setSelectedBook] = useState<any | null>(null);
-
+  console.log(selectedBook)
   useEffect(() => {
     const fetchBooks = async () => {
       try {
@@ -52,6 +52,7 @@ const BookPage = () => {
           <h2 className="text-2xl">
             has requested
             <span className="font-bold"> ${selectedBook.price}</span>
+        
           </h2>
         </div>
 
@@ -63,7 +64,10 @@ const BookPage = () => {
             currency: "usd",
           }}
         >
-          <CheckoutPage amount={selectedBook.price} />
+          <CheckoutPage 
+            amount={selectedBook.price} 
+            bookId={selectedBook._id} 
+          />
         </Elements>
       </main>
     );

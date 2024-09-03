@@ -7,6 +7,7 @@ import { getToken } from "next-auth/jwt";
 
 async function getCurrentUser(req: NextRequest) {
   const token = await getToken({ req });
+  console.log(token);
   return token;
 }
 

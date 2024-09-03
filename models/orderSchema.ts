@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const OrderSchema = new mongoose.Schema(
   {
-    user: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -12,7 +12,7 @@ const OrderSchema = new mongoose.Schema(
       ref: "Book",
       required: true,
     },
-    price: {
+    amount: {
       type: Number,
       required: true,
     },
@@ -20,6 +20,6 @@ const OrderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Order = mongoose.model("Order", OrderSchema);
+const Order = mongoose.models.Order||mongoose.model("Order", OrderSchema);
 
 export default Order;
