@@ -55,7 +55,7 @@ const BookPage = () => {
         <div className="mb-10">
           <h1 className="text-4xl font-extrabold mb-2">{selectedBook.title}</h1>
           <h2 className="text-2xl">
-            has requested
+            is now available at
             <span className="font-bold"> ${selectedBook.price}</span>
           </h2>
         </div>
