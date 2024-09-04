@@ -1,4 +1,5 @@
-'use client';
+"use client";
+
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Elements } from "@stripe/react-stripe-js";
@@ -6,19 +7,20 @@ import { loadStripe } from "@stripe/stripe-js";
 import CheckoutPage from "./checkoutPage";
 import convertToSubcurrency from "@/lib/convertToSubcurrency";
 
-if (process.env.
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY === undefined) {
+if (process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY === undefined) {
   throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
 }
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+);
 
 const BookPage = () => {
   const [books, setBooks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedBook, setSelectedBook] = useState<any | null>(null);
-  console.log(selectedBook)
+
   useEffect(() => {
     const fetchBooks = async () => {
       try {
@@ -27,7 +29,10 @@ const BookPage = () => {
           throw new Error("Error fetching books");
         }
         const data = await response.json();
-        setBooks(data);
+        const sortedBooks = data.sort(
+          (a: any, b: any) => b.purchasedCount - a.purchasedCount
+        );
+        setBooks(sortedBooks);
         setLoading(false);
       } catch (error) {
         setError("Error fetching books");
@@ -52,7 +57,6 @@ const BookPage = () => {
           <h2 className="text-2xl">
             has requested
             <span className="font-bold"> ${selectedBook.price}</span>
-        
           </h2>
         </div>
 
@@ -64,10 +68,7 @@ const BookPage = () => {
             currency: "usd",
           }}
         >
-          <CheckoutPage 
-            amount={selectedBook.price} 
-            bookId={selectedBook._id} 
-          />
+          <CheckoutPage amount={selectedBook.price} bookId={selectedBook._id} />
         </Elements>
       </main>
     );
@@ -75,33 +76,38 @@ const BookPage = () => {
 
   return (
     <div className="p-8">
-  <h1 className="text-2xl font-bold mb-4">Books</h1>
-  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-    {books.map((book) => (
-      <div key={book._id} className="bg-white shadow-md rounded-lg p-3 flex flex-col items-center">
-        <div className="w-full h-[18rem]">
-          <Image
-            src={book.imageUrl}
-            alt={book.title}
-            width={80} 
-            height={120}
-            className="rounded-md  object-center w-full h-full"
-          />
-        </div>
-        <h2 className="mt-3 text-lg font-medium text-center truncate w-full">{book.title}</h2>
-        <p className="text-gray-500 text-sm mt-1 text-center">${book.price}</p>
-        <button
-          onClick={() => handleBuyNow(book)}
-          className="mt-3 bg-black text-white text-sm px-2 py-1 rounded hover:bg-blue-600"
-        >
-          Buy Now
-        </button>
+      <h1 className="text-2xl font-bold mb-4">Books</h1>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {books.map((book) => (
+          <div
+            key={book._id}
+            className="bg-white shadow-md rounded-lg p-3 flex flex-col items-center"
+          >
+            <div className="w-full h-[18rem]">
+              <Image
+                src={book.imageUrl}
+                alt={book.title}
+                width={80}
+                height={120}
+                className="rounded-md object-center w-full h-full"
+              />
+            </div>
+            <h2 className="mt-3 text-lg font-medium text-center truncate w-full">
+              {book.title}
+            </h2>
+            <p className="text-gray-500 text-sm mt-1 text-center">
+              ${book.price}
+            </p>
+            <button
+              onClick={() => handleBuyNow(book)}
+              className="mt-3 bg-black text-white text-sm px-2 py-1 rounded hover:bg-blue-600"
+            >
+              Buy Now
+            </button>
+          </div>
+        ))}
       </div>
-    ))}
-  </div>
-</div>
-
-
+    </div>
   );
 };
 

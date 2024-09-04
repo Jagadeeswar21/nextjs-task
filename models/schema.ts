@@ -76,8 +76,13 @@ const userSchema = new Schema(
       type: Date,
       required: false,
     },
+    purchasedBooks: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Book",
+      },
+    ],
   },
-
   { timestamps: true }
 );
 

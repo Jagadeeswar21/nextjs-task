@@ -1,13 +1,21 @@
-// pages/checkout.tsx
-
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
+import {
+  useStripe,
+  useElements,
+  PaymentElement,
+} from "@stripe/react-stripe-js";
 import convertToSubcurrency from "@/lib/convertToSubcurrency";
 import { useRouter } from "next/navigation";
 
-const CheckoutPage = ({ amount, bookId }: { amount: number; bookId: string }) => {
+const CheckoutPage = ({
+  amount,
+  bookId,
+}: {
+  amount: number;
+  bookId: string;
+}) => {
   const stripe = useStripe();
   const elements = useElements();
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -72,11 +80,12 @@ const CheckoutPage = ({ amount, bookId }: { amount: number; bookId: string }) =>
         if (!response.ok) {
           throw new Error("Failed to store order information");
         }
-
-        // Redirect to the success page
+        await fetch(`/api/books/${bookId}`, {
+          method: "POST",
+        });
         router.push(`/paymentSuccess?amount=${amount}`);
       } catch (error) {
-        setErrorMessage("Error storing order information");
+        setErrorMessage("Error processing the order");
         console.error(error);
       }
     }
@@ -103,7 +112,9 @@ const CheckoutPage = ({ amount, bookId }: { amount: number; bookId: string }) =>
     <div className="bg-white p-2 rounded-md">
       <form onSubmit={handleSubmit}>
         {clientSecret && <PaymentElement />}
-        {errorMessage && <div className="text-red-500 mt-2">{errorMessage}</div>}
+        {errorMessage && (
+          <div className="text-red-500 mt-2">{errorMessage}</div>
+        )}
 
         <button
           disabled={!stripe || loading}
