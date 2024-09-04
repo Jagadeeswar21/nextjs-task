@@ -82,6 +82,14 @@ export async function POST(request: NextRequest) {
 
     await newOrder.save();
 
+    // Update the user's purchased books
+    const bokkk=await User.findByIdAndUpdate(
+      currentUser.sub,
+      { $addToSet: { purchasedBooks: bookId } }, 
+      { new: true }
+    );
+    console.log(bokkk)
+
     return NextResponse.json(newOrder, { status: 201 });
   } catch (error) {
     console.error("Error creating order:", error);

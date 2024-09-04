@@ -76,12 +76,12 @@ const userSchema = new Schema(
       type: Date,
       required: false,
     },
-    purchasedBooks: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Book",
-      },
-    ],
+    purchasedBooks: {
+      type: [Schema.Types.ObjectId],
+      ref: 'Book',
+      default: [],
+    },
+    
   },
   { timestamps: true }
 );
