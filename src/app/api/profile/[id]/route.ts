@@ -24,11 +24,11 @@ const upload = multer({
   }
 });
 const multerUpload = promisify(upload.single('profilePicture'));
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+// export const config = {
+//   api: {
+//     bodyParser: false,
+//   },
+// };
 
 export async function PUT(req: NextRequest) {
   try {

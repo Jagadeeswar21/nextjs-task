@@ -1,8 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-const PaymentSuccessPage = () => {
+const PaymentSuccess = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [price, setPrice] = useState<number | null>(null);
@@ -26,6 +26,25 @@ const PaymentSuccessPage = () => {
       >
         Go to Books Dashboard
       </button>
+    </div>
+  );
+};
+
+
+
+// export default PaymentSuccessPage;
+const PaymentSuccessPage: React.FC = () => {
+  return (
+    <div className="">
+      <Suspense
+        fallback={
+          <div className="flex items-center justify-center h-screen">
+            {/* <Spinner /> */}
+          </div>
+        }
+      >
+        <PaymentSuccess />
+      </Suspense>
     </div>
   );
 };
