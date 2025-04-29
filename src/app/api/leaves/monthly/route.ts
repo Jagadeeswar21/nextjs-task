@@ -3,6 +3,9 @@ import { type NextRequest } from 'next/server';
 import { connectMongoDB } from '../../../../../lib/mongodb';
 import Leave from '../../../../../models/leaveSchema';
 
+
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     await connectMongoDB();

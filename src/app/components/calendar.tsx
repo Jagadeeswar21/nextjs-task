@@ -84,7 +84,7 @@ const LeaveCalendar: React.FC<LeaveCalendarProps> = ({ statusFilter }) => {
   };
   useEffect(() => {
     fetchLeaveData();
-  }, [session, statusFilter]);
+  }, [session, statusFilter, fetchLeaveData]);
 
   const handleMonthChange = (direction: 'prev' | 'next') => {
     const newDate = moment(currentDate).add(direction === 'prev' ? -1 : 1, 'month').toDate();

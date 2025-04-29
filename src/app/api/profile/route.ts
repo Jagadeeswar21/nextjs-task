@@ -3,6 +3,7 @@ import User from "../../../../models/schema";
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
+export const dynamic = "force-dynamic";
 async function getUser(req: NextRequest) {
   const token = await getToken({ req });
   return token;

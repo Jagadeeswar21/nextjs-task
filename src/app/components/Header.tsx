@@ -121,7 +121,7 @@ const Header: React.FC = () => {
                 className="flex items-center gap-3 text-white px-3 py-2 rounded focus:outline-none"
               >
                 {profilePicture ? (
-                  <img
+                  <Image   
                     src={profilePicture}
                     alt="Profile"
                     className="h-8 w-8 rounded-full object-cover"
@@ -129,7 +129,9 @@ const Header: React.FC = () => {
                 ) : (
                   <CgProfile className=" text-black h-8 w-8" />
                 )}
-                <span className="flex gap-3 align-middle text-black font-bold text-lg">{session.user.name}</span>
+                <span className="flex gap-3 align-middle text-black font-bold text-lg">
+                  {session.user.name}
+                </span>
               </button>
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg border border-gray-200 z-50">
@@ -148,8 +150,8 @@ const Header: React.FC = () => {
                       }}
                       className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white gap-2"
                     >
-
-                      <IoLogOutOutline className="h-5 w-5" /> <span>Logout</span>
+                      <IoLogOutOutline className="h-5 w-5" />{" "}
+                      <span>Logout</span>
                     </button>
                   </div>
                 </div>

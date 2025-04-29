@@ -5,6 +5,8 @@ import { connectMongoDB } from "../../../../../lib/mongodb"; // Adjust this path
 import User from "../../../../../models/schema"; // Adjust this path as needed
 import { getToken } from "next-auth/jwt"; // Import getToken to handle session
 
+
+export const dynamic = "force-dynamic";
 // Connect to the database
 connectMongoDB();
 

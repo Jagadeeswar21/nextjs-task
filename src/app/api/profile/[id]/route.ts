@@ -30,6 +30,8 @@ const multerUpload = promisify(upload.single('profilePicture'));
 //   },
 // };
 
+export const dynamic = "force-dynamic";
+
 export async function PUT(req: NextRequest) {
   try {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
