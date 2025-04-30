@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       verificationToken,
       verificationTokenExpiry,
     });
-    const verificationUrl = `http://localhost:3000/verify-email/${verificationToken}`;
+  const verificationUrl = `${process.env.NEXTAUTH_URL}/verify-email/${verificationToken}`;
     const body = `
       <p>Hi ${name},</p>
       <p>Thank you for registering on our platform. We're excited to have you with us!</p>
